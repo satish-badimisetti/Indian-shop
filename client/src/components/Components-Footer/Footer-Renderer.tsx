@@ -36,39 +36,44 @@ const FooterRenderer: React.FC = () => {
           />
         </Grid>
 
-        {/* <Grid item xs={12} sm={9} md={6} lg={3}>
-          <Typography style={{ fontSize: 16, fontFamily: 'Proxima Nova', paddingBottom: 20, fontWeight: 900, }}>All Categories</Typography>
-          <Typography>Row 1</Typography>
-          <Typography>Row 2</Typography>
-          <Typography>Row 3</Typography>
+        <Grid item xs={12} sm={9} md={6} lg={3}>
+          {/* <Typography style={{ fontSize: 16, fontFamily: 'Proxima Nova', paddingBottom: 20, fontWeight: 900, }}>All Categories</Typography> */}
+          <Typography style={{ marginBottom: 16 }} >Privacy Policy</Typography>
+          <Typography style={{ marginBottom: 16 }}>Refund policy</Typography>
+          <Typography style={{ marginBottom: 16 }}>FAQs</Typography>
+          {/* <Typography></Typography>
           <Typography>Row 4</Typography>
-          <Typography>Row 5</Typography>
+          <Typography>Row 5</Typography> */}
         </Grid>
 
         <Grid item xs={12} sm={9} md={6} lg={3}>
-          <Typography style={{ fontSize: 16, fontFamily: 'Proxima Nova', paddingBottom: 20, fontWeight: 900, }}>Company</Typography>
-          <Typography>Row 1</Typography>
-          <Typography>Row 2</Typography>
-          <Typography>Row 3</Typography>
-          <Typography>Row 4</Typography>
-          <Typography>Row 5</Typography>
+          {/* <Typography style={{ fontSize: 16, fontFamily: 'Proxima Nova', paddingBottom: 20, fontWeight: 900, }}>Company</Typography> */}
+          <Typography style={{ marginBottom: 16 }}>Terms of service</Typography>
+          <Typography style={{ marginBottom: 16 }}>Shipping policy</Typography>
+          <div>
+            <img src="https://logos-world.net/wp-content/uploads/2020/04/DHL-Logo-700x394.png" alt="DHL" style={{ marginRight: 8, width: 50, height: 'auto' }} />
+            <img src="https://logos-download.com/wp-content/uploads/2016/06/Poste_Italiane_logo_logotype.png" alt="Poste Italiane" style={{ marginRight: 8, width: 50, height: 'auto' }} />
+            {/* Add more logos as needed */}
+          </div>
         </Grid>
 
+
+
         <Grid item xs={12} sm={9} md={6} lg={3}>
+          <Typography style={{ marginBottom: 16 }}>Delivery partners</Typography>
+          <Typography style={{ marginBottom: 16 }}>Secured Payments</Typography>
+          <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" style={{ marginRight: 8, width: 50, height: 50 }} />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="MasterCard" style={{ marginRight: 8, width: 50, height: 50 }} />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ marginRight: 8, width: 50, height: 50 }} />
+          </div>
+        </Grid>
 
-          <Typography style={{ fontSize: 16, fontFamily: 'Proxima Nova', paddingBottom: 20, fontWeight: 900, }}>Legal</Typography>
-          <Typography>Row 1</Typography>
-          <Typography>Row 2</Typography>
-          <Typography>Row 3</Typography>
-          <Typography>Row 4</Typography>
-          <Typography>Row 5</Typography>
-
-        </Grid> */}
       </Grid>
       {/* Social Media Links */}
       <Grid container spacing={10} justifyContent="flex-start" alignItems="flex-start" style={{ paddingLeft: 100, paddingRight: 100, paddingBottom: 50 }}>
         <Grid item xs={12} sm={9} md={6} lg={3}>
-          <Typography  variant="body1" >
+          <Typography  variant="body1" style={{fontWeight: 900}}>
             Follow Us:
           </Typography>
           <Grid container spacing={2}>
@@ -100,19 +105,19 @@ const FooterRenderer: React.FC = () => {
           </Grid>
         </Grid>
         <Grid item  xs={12} sm={9} md={6} lg={3}>
-          <Typography >
+          <Typography style={{fontWeight: 900}} >
             Call Us:
           </Typography>
           <Typography variant="body1">+39 328 428 8799</Typography>
         </Grid>
         <Grid item  xs={12} sm={9} md={6} lg={3}>
-          <Typography>
+          <Typography style={{fontWeight: 900}}>
             Write Us:
           </Typography>
           <Typography variant="body1">mahomedali30@gmail.com</Typography>
         </Grid>
         <Grid item  xs={12} sm={9} md={6} lg={3}>
-          <Typography variant="body1" >
+          <Typography variant="body1" style={{fontWeight: 900}}>
             Address:
           </Typography>
           <Typography variant="body1">
