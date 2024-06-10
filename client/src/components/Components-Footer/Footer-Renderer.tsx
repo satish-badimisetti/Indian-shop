@@ -2,6 +2,9 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Grid, Typography, Link, Box } from '@material-ui/core';
 import { Facebook, X, Instagram, LinkedIn, YouTube } from '@mui/icons-material';
+import apiConfig from "../../api/client/endpoint";
+
+const BASE_URL = apiConfig.BASE_URL;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,6 +24,8 @@ const FooterRenderer: React.FC = () => {
       <Grid container  spacing={10} justifyContent="flex-start" alignItems="flex-start" style={{ paddingLeft: 100, paddingRight: 100, paddingTop: 30, paddingBottom: 30 }}>
         <Grid item xs={12} sm={9} md={6} lg={3}>
           <div  style={{ paddingBottom: 50 }}>
+          <img src={`${BASE_URL}images/logo.jpeg`} width="80px" height="70px">
+          </img>
             <div style={{ width: 260, paddingBottom: 20 }}>
               <Typography variant="h5" style={{ color: '#0D3823', fontSize: 24, fontFamily: 'Playfair Display', fontWeight: 900, textTransform: 'capitalize', wordWrap: 'break-word' }}>
                 Indian Shop<br />

@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
     marginLeft: "auto",
     marginRight: "auto",
+    "object-fit":"fill"
   },
   categoryTitle: {
     fontFamily: "Proxima Nova",

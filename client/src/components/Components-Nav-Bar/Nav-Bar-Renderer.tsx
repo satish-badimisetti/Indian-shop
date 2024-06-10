@@ -170,6 +170,8 @@ const NavbarRenderer = () => {
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
+        <img src={`${BASE_URL}images/logo.jpeg`} width="80px" height="70px">
+          </img>
           <div style={{ width: 151, height: 44, background: '#F2F2F2', alignContent: 'center', marginLeft: 14 }}>
             <Typography variant="h1" className={classes.logo}>
               
@@ -219,7 +221,7 @@ const NavbarRenderer = () => {
             <CartDrawerRenderer isOpen={isCartOpen} onClose={handleCartClose} />
           </IconButton> */}
         </Toolbar>
-        <Toolbar style={{gap: '50px'}}>
+        <Toolbar style={{gap: '30px'}}>
           <div className={classes.menuContainer}>
             <Button
               id="category_list"
