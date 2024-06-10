@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Grid, Typography, Link, Box } from '@material-ui/core';
+import { Grid, Typography, Link, Box, IconButton } from '@material-ui/core';
 import { Facebook, X, Instagram, LinkedIn, YouTube } from '@mui/icons-material';
 import apiConfig from "../../api/client/endpoint";
 
@@ -21,11 +21,11 @@ const FooterRenderer: React.FC = () => {
 
   return (
     <footer className={classes.footer}>
-      <Grid container  spacing={10} justifyContent="flex-start" alignItems="flex-start" style={{ paddingLeft: 100, paddingRight: 100, paddingTop: 30, paddingBottom: 30 }}>
+      <Grid container spacing={10} justifyContent="flex-start" alignItems="flex-start" style={{ paddingLeft: 100, paddingRight: 100, paddingTop: 30, paddingBottom: 30 }}>
         <Grid item xs={12} sm={9} md={6} lg={3}>
-          <div  style={{ paddingBottom: 50 }}>
-          <img src={`${BASE_URL}images/logo.jpeg`} width="80px" height="70px">
-          </img>
+          <div style={{ paddingBottom: 50 }}>
+            <img src={`${BASE_URL}images/logo.jpeg`} width="80px" height="70px">
+            </img>
             <div style={{ width: 260, paddingBottom: 20 }}>
               <Typography variant="h5" style={{ color: '#0D3823', fontSize: 24, fontFamily: 'Playfair Display', fontWeight: 900, textTransform: 'capitalize', wordWrap: 'break-word' }}>
                 Indian Shop<br />
@@ -78,7 +78,7 @@ const FooterRenderer: React.FC = () => {
       {/* Social Media Links */}
       <Grid container spacing={10} justifyContent="flex-start" alignItems="flex-start" style={{ paddingLeft: 100, paddingRight: 100, paddingBottom: 50 }}>
         <Grid item xs={12} sm={9} md={6} lg={3}>
-          <Typography  variant="body1" style={{fontWeight: 900}}>
+          <Typography variant="body1" style={{ fontWeight: 900 }}>
             Follow Us:
           </Typography>
           <Grid container spacing={2}>
@@ -89,7 +89,9 @@ const FooterRenderer: React.FC = () => {
             </Grid>
             <Grid item>
               <div style={{ width: 26, height: 26, }} >
+                {/* <IconButton aria-label="facebook" component={Link} to="https://www.facebook.com/indianshop.milano/?locale=it_IT"> */}
                 <Facebook />
+                {/* </IconButton> */}
               </div>
             </Grid>
             <Grid item>
@@ -109,20 +111,24 @@ const FooterRenderer: React.FC = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item  xs={12} sm={9} md={6} lg={3}>
-          <Typography style={{fontWeight: 900}} >
+        <Grid item xs={12} sm={9} md={6} lg={3}>
+          <Typography style={{ fontWeight: 900 }} >
             Call Us:
           </Typography>
-          <Typography variant="body1">+39 328 428 8799</Typography>
+          <Typography variant="body1"> WhatsApp:  +39 3888578000</Typography>
+          <Typography variant="body1">Telephone :  0289656178
+          </Typography>
+          <Typography variant="body1">Mobile: +39 328 428 8799
+          </Typography>
         </Grid>
-        <Grid item  xs={12} sm={9} md={6} lg={3}>
-          <Typography style={{fontWeight: 900}}>
+        <Grid item xs={12} sm={9} md={6} lg={3}>
+          <Typography style={{ fontWeight: 900 }}>
             Write Us:
           </Typography>
           <Typography variant="body1">mahomedali30@gmail.com</Typography>
         </Grid>
-        <Grid item  xs={12} sm={9} md={6} lg={3}>
-          <Typography variant="body1" style={{fontWeight: 900}}>
+        <Grid item xs={12} sm={9} md={6} lg={3}>
+          <Typography variant="body1" style={{ fontWeight: 900 }}>
             Address:
           </Typography>
           <Typography variant="body1">
@@ -136,8 +142,7 @@ const FooterRenderer: React.FC = () => {
         align="center"
         style={{ paddingTop: "16px", height: 38, background: '#438866', textAlign: 'center', color: 'white', fontSize: 14, fontFamily: 'Proxima Nova', fontWeight: '500', wordWrap: 'break-word' }}
       >
-        &copy; {new Date().getFullYear()} Designed By InfyAir SRL. All rights
-        reserved.
+        &copy; {new Date().getFullYear()} © Indian Shop Milano, All rights reserved.    Developed by INFYAIR SRL
       </Typography>
     </footer>
   );
