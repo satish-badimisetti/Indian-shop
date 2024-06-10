@@ -55,8 +55,9 @@ export const categoryCard = makeStyles((theme) => ({
         fontFamily: "Proxima Nova",
         fontSize: 16,
         fontWeight: 700,
-        textAlign: "left",
-        paddingLeft: 40,
+        wordWrap: 'break-word',
+        textAlign: 'center',
+        width: '100%'
     },
     categoryTitleArea: {
         marginLeft: "auto",
