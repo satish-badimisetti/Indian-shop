@@ -65,17 +65,17 @@ const GoogleReviewsRenderer: React.FC = () => {
   const [reviewsToShow, setReviewsToShow]=useState(4);
   const [stopScrolling,setStopScrolling]=useState(false);
   const innerDiv = useRef<HTMLDivElement>(null);
-
+  const reviewsDiv = useRef<HTMLDivElement>(null);
 
   useEffect(()=>{
     const brandsScroller=
       setInterval(()=>
       {
         setCurrentPositionIndex((prevIndex)=>{
-          if(!stopScrolling && innerDiv.current){    
+          if(!stopScrolling && innerDiv.current && reviewsDiv.current){    
               if(prevIndex*30>(innerDiv.current.offsetWidth)){
                 innerDiv.current.style.transition="";
-                return 0
+                return (reviewsDiv.current.offsetWidth/-30)
               }
             else {
               innerDiv.current.style.transition="transform 0.3s linear";
@@ -118,7 +118,7 @@ const GoogleReviewsRenderer: React.FC = () => {
             <Typography variant="h4" className={classes.mainTitle} gutterBottom>
               Customer Reviews
             </Typography>
-            <div style={{width:"80%"}}>
+            <div ref={reviewsDiv}>
             <div
               ref={innerDiv}
               onMouseOver={()=>setStopScrolling(true)}

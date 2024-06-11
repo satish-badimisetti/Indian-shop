@@ -61,10 +61,10 @@ const ShopByBrandRenderer: React.FC = () => {
       setInterval(()=>
       {
         setCurrentPositionIndex((prevIndex)=>{
-          if(!stopScrolling && innerDiv.current){    
+          if(!stopScrolling && innerDiv.current && brandsDiv.current){    
               if(prevIndex*30>(innerDiv.current.offsetWidth)){
                 innerDiv.current.style.transition="";
-                return 0
+                return (brandsDiv.current.offsetWidth/-30)
               }
             else {
               innerDiv.current.style.transition="transform 0.3s linear";
