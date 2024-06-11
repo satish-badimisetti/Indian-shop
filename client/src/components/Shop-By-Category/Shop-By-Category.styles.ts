@@ -45,11 +45,12 @@ export const categoryCard = makeStyles((theme) => ({
         backgroundColor: "#F2F2F2",
     },
     imageStyles: {
-        height: 104,
-        width: 104,
+        height: 130,
+        width: 130,
         marginTop: 10,
         marginLeft: "auto",
         marginRight: "auto",
+        marginBottom:"-20px"
     },
     categoryTitle: {
         fontFamily: "Proxima Nova",

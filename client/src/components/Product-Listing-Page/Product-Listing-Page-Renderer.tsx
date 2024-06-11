@@ -21,16 +21,38 @@ import ProductsBannerRenderer from "../Components-Banner/Products-Banner-Rendere
 const ProductListingPageRenderer: React.FC = () => {
   const classes = useStyles();
   const [products,setProducts]=useState<any[]>([]);
+  const [productsToShow,setProductsToShow]=useState<any[]>([]);
+  const [searchString,setSearchString]=useState("");
+  const [sortOption,setSortOption]=useState(0);
+  
 
   const {categoryid}=useParams();
   useEffect(()=>{
-    console.log("being rendered");
     updateProducts();
   },[categoryid]);
+
   const updateProducts=async ()=>{
     const productsList=await useGetProductsByCategoryIDAPI(categoryid);
-    console.log(productsList);
     setProducts(productsList);
+    updateProductsToShow(productsList,searchString,sortOption===1?1:-1);
+  }
+  const handleSearchTextUpdate=(e:any)=>{
+    const searchText=e.target.value;
+    updateProductsToShow(products,searchText,sortOption===1?1:-1);
+    setSearchString(e.target.value);
+  }
+  const updateProductsToShow=(products:any[],searchText:string,sortOrder:number=0)=>{
+    setProductsToShow(
+      products.filter((product)=>{
+        return product.Name.toUpperCase().includes(searchText.toLocaleUpperCase());
+      }).sort((a,b)=>(a.DiscountedPrice - b.DiscountedPrice)*sortOrder)
+    )
+  }
+
+  const handleSortOptionChange=(e:any)=>{
+    const optionvalue=e.target.value;
+    setSortOption(optionvalue);
+    updateProductsToShow(productsToShow,searchString,optionvalue===1?1:-1)
   }
 
   return (
@@ -51,6 +73,8 @@ const ProductListingPageRenderer: React.FC = () => {
             <InputBase
               placeholder="What are your looking for"
               className={classes.searchInput}
+              value={searchString}
+              onChange={(e)=>handleSearchTextUpdate(e)}
             />
             <div className={classes.searchIcon}>
               <SearchIcon style={{ width: 18, height: 18 }} />
@@ -59,24 +83,23 @@ const ProductListingPageRenderer: React.FC = () => {
           <FormControl variant="outlined" >
             <Select
               labelId="sort-by-label"
-              value=""
+              value={sortOption}
               displayEmpty
               className={classes.selectEmpty}
               inputProps={{ "aria-label": "Sort By" }}
+              onChange={(e)=>{handleSortOptionChange(e)}}
             >
-              <MenuItem value="" disabled>
-                Sort By
-              </MenuItem>
-              <MenuItem value={1}>Price: Low to High</MenuItem>
-              <MenuItem value={2}>Price: High to Low</MenuItem>
-              <MenuItem value={3}>Best Seller</MenuItem>
+                <MenuItem value={0} disabled>Sort By</MenuItem>
+                <MenuItem value={1}>Price: Low to High</MenuItem>
+                <MenuItem value={2}>Price: High to Low</MenuItem>
+                {/* <MenuItem value={3}>Best Seller</MenuItem> */}
             </Select>
           </FormControl>
         </div>
       </div>
       <Divider className={classes.divider} />
       <Grid container spacing={3}>
-        {products.map((product) => (
+        {productsToShow.map((product) => (
           <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
             <GroceryItemCardRenderer product={product}/>
           </Grid>

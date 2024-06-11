@@ -61,9 +61,35 @@ const GoogleReviewsRenderer: React.FC = () => {
   const classes = useStyles();
 
   //relating display of reviews
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentPositionIndex, setCurrentPositionIndex] = useState(0);
   const [reviewsToShow, setReviewsToShow]=useState(4);
-  const reviewDivRef = useRef<HTMLDivElement>(null);
+  const [stopScrolling,setStopScrolling]=useState(false);
+  const innerDiv = useRef<HTMLDivElement>(null);
+
+
+  useEffect(()=>{
+    const brandsScroller=
+      setInterval(()=>
+      {
+        setCurrentPositionIndex((prevIndex)=>{
+          if(!stopScrolling && innerDiv.current){    
+              if(prevIndex*30>(innerDiv.current.offsetWidth)){
+                innerDiv.current.style.transition="";
+                return 0
+              }
+            else {
+              innerDiv.current.style.transition="transform 0.3s linear";
+              return prevIndex+1
+            }
+          }
+          else{
+            return prevIndex
+          }
+        }
+        )
+      },300);
+    return (()=>clearInterval(brandsScroller));
+  });
 
   //end
   useEffect(() => {
@@ -85,83 +111,65 @@ const GoogleReviewsRenderer: React.FC = () => {
     fetchReviews();
   }, []);
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - reviewsToShow));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      Math.min(mockReviews.length - reviewsToShow, prevIndex + reviewsToShow)
-    );
-  };
-
   return (
     <>
-      <div style={{display: 'flex'}}>
-        <IconButton
-          className={`${classes.arrowButton} ${classes.leftArrow}`}
-          onClick={handlePrev}
-          disabled={currentIndex === 0}
-        >
-          <ChevronLeftIcon fontSize="large" />
-        </IconButton>
-        <Container maxWidth="lg">
-          <div className={classes.root}>
+      <div className={classes.root} style={{display: 'flex', flexDirection:"column",width:"100%", overflow:"hidden"}}>
+          
             <Typography variant="h4" className={classes.mainTitle} gutterBottom>
               Customer Reviews
             </Typography>
-
-            <Grid container spacing={8}>
-              {reviews.slice(currentIndex, currentIndex + reviewsToShow).map((review, index) => (
-                  <Grid
-                    item
+            <div style={{width:"80%"}}>
+            <div
+              ref={innerDiv}
+              onMouseOver={()=>setStopScrolling(true)}
+              onMouseOut={()=>setStopScrolling(false)}
+              style={{
+                display:"flex",
+                flexDirection:"row",
+                gap:"16px",
+                transition:"transform 0.3s linear",
+                transform:`translate(${-currentPositionIndex*30}px)`,
+              }} 
+            >
+              {reviews.map((review, index) => (
+                  <div
                     key={index}
-                    xs={12}
-                    sm={9}
-                    md={6}
-                    lg={3}
-                    style={{ cursor: "pointer" }}
+                    style={{
+                            cursor: "pointer",
+                          }}
                   >
-                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                   <CardContent>
-                    <Box display="flex" alignItems="center" mb={2}>
-                      <Avatar src={review.profile_photo_url} alt={review.author_name} />
-                       <Box ml={2}>
-                        <Typography variant="h6">{review.author_name}</Typography>
-                      </Box>
-                     </Box>
-                     <Box 
-                      height={100}
-                      overflow={"auto"}
-                      >
-                      <Typography variant="body2" gutterBottom>
-                        {review.text}
-                      </Typography>
-                    </Box>
-                    <Box mt="auto">
-                      <Typography variant="body2">
-                        {Array.from({ length: 5 }).map((_, starIndex) => (
-                          starIndex < review.rating
-                            ? <span key={starIndex}>⭐</span>
-                            : <span key={starIndex}>☆</span>
-                        ))}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-                  </Grid>
+                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', width:"300px" }}>
+                      <CardContent>
+                        <Box display="flex" alignItems="center" mb={2}>
+                          <Avatar src={review.profile_photo_url} alt={review.author_name} />
+                          <Box ml={2}>
+                            <Typography variant="h6">{review.author_name}</Typography>
+                          </Box>
+                        </Box>
+                        <Box 
+                          height={100}
+                          overflow={"auto"}
+                          >
+                          <Typography variant="body2" gutterBottom>
+                            {review.text}
+                          </Typography>
+                        </Box>
+                        <Box mt="auto">
+                          <Typography variant="body2">
+                            {Array.from({ length: 5 }).map((_, starIndex) => (
+                              starIndex < review.rating
+                                ? <span key={starIndex}>⭐</span>
+                                : <span key={starIndex}>☆</span>
+                            ))}
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </div>
                 ))}
-            </Grid>
-          </div>  
-        </Container>
-        <IconButton
-          className={`${classes.arrowButton}`}
-          onClick={handleNext}
-          disabled={mockReviews.length - reviewsToShow <=0 || currentIndex === mockReviews.length - reviewsToShow}
-        >
-          <ChevronRightIcon fontSize="large" />
-        </IconButton>
-      </div>
+            </div>
+          </div>
+          </div>
     </>
   );
 };

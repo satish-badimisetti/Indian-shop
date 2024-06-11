@@ -166,15 +166,18 @@ const NavbarRenderer = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const backToHome=()=>{
+    navigate(`/app/home`);
+  }
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
-        <img src={`${BASE_URL}images/logo.jpeg`} width="80px" height="70px">
-          </img>
-          <div style={{ width: 151, height: 44, background: '#F2F2F2', alignContent: 'center', marginLeft: 14 }}>
+          <img src={`${BASE_URL}images/logo.jpeg`} width="88px" height="50px" onClick={backToHome} style={{cursor:"pointer"}}/>
+          <div style={{ width: 151, height: 44, background: '#F2F2F2', alignContent: 'center', position:"relative", left:"-18px", cursor:"pointer"}}
+          onClick={backToHome}
+          >
             <Typography variant="h1" className={classes.logo}>
-              
               Indian Shop
             </Typography>
           </div>

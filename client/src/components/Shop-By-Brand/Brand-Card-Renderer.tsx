@@ -10,7 +10,7 @@ const BASE_URL = apiConfig.BASE_URL;
 const useStyles = makeStyles((theme) => ({
   cardStyles: {
     maxWidth: 180,
-    maxHeight: 180,
+    maxHeight: 120,
     borderRadius: 13,
     height: 180,
     width: 180,
@@ -46,9 +46,7 @@ const BrandCardRenderer = (data: any) => {
         image={`${BASE_URL}images/BRANDS/${data.data.filename}`}
         alt="image"
       />
-      <CardContent className={useStyles().categoryTitleArea}>
-        <Typography className={useStyles().categoryTitle}>{data.data.name}</Typography>
-      </CardContent>
+      
     </Card>
   );
 };

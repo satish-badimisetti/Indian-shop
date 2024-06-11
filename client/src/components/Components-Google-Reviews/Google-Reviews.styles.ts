@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   mainTitle: {
-    marginBottom: theme.spacing(8),
+    marginBottom: theme.spacing(2),
     paddingTop: theme.spacing(6)
   },
   cardContainer: {
