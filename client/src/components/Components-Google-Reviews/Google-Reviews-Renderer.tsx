@@ -113,62 +113,70 @@ const GoogleReviewsRenderer: React.FC = () => {
 
   return (
     <>
-      <div className={classes.root} style={{display: 'flex', flexDirection:"column",width:"100%", overflow:"hidden"}}>
+      <div className={classes.root} style={{display: 'flex', flexDirection:"column", overflow:"hidden", justifyContent:"center"}}>
           
             <Typography variant="h4" className={classes.mainTitle} gutterBottom>
               Customer Reviews
             </Typography>
-            <div ref={reviewsDiv}>
             <div
-              ref={innerDiv}
-              onMouseOver={()=>setStopScrolling(true)}
-              onMouseOut={()=>setStopScrolling(false)}
+              ref={reviewsDiv}
               style={{
                 display:"flex",
-                flexDirection:"row",
-                gap:"16px",
-                transition:"transform 0.3s linear",
-                transform:`translate(${-currentPositionIndex*30}px)`,
-              }} 
+                margin:"auto",
+                width:"90%",
+                overflow:"hidden"
+              }}
             >
-              {reviews.map((review, index) => (
-                  <div
-                    key={index}
-                    style={{
-                            cursor: "pointer",
-                          }}
-                  >
-                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', width:"300px" }}>
-                      <CardContent>
-                        <Box display="flex" alignItems="center" mb={2}>
-                          <Avatar src={review.profile_photo_url} alt={review.author_name} />
-                          <Box ml={2}>
-                            <Typography variant="h6">{review.author_name}</Typography>
+              <div
+                ref={innerDiv}
+                onMouseOver={()=>setStopScrolling(true)}
+                onMouseOut={()=>setStopScrolling(false)}
+                style={{
+                  display:"flex",
+                  flexDirection:"row",
+                  gap:"16px",
+                  transition:"transform 0.3s linear",
+                  transform:`translate(${-currentPositionIndex*30}px)`,
+                }} 
+              >
+                {reviews.map((review, index) => (
+                    <div
+                      key={index}
+                      style={{
+                              cursor: "pointer",
+                            }}
+                    >
+                      <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', width:"300px" }}>
+                        <CardContent>
+                          <Box display="flex" alignItems="center" mb={2}>
+                            <Avatar src={review.profile_photo_url} alt={review.author_name} />
+                            <Box ml={2}>
+                              <Typography variant="h6">{review.author_name}</Typography>
+                            </Box>
                           </Box>
-                        </Box>
-                        <Box 
-                          height={100}
-                          overflow={"auto"}
-                          >
-                          <Typography variant="body2" gutterBottom>
-                            {review.text}
-                          </Typography>
-                        </Box>
-                        <Box mt="auto">
-                          <Typography variant="body2">
-                            {Array.from({ length: 5 }).map((_, starIndex) => (
-                              starIndex < review.rating
-                                ? <span key={starIndex}>⭐</span>
-                                : <span key={starIndex}>☆</span>
-                            ))}
-                          </Typography>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
+                          <Box 
+                            height={100}
+                            overflow={"auto"}
+                            >
+                            <Typography variant="body2" gutterBottom>
+                              {review.text}
+                            </Typography>
+                          </Box>
+                          <Box mt="auto">
+                            <Typography variant="body2">
+                              {Array.from({ length: 5 }).map((_, starIndex) => (
+                                starIndex < review.rating
+                                  ? <span key={starIndex}>⭐</span>
+                                  : <span key={starIndex}>☆</span>
+                              ))}
+                            </Typography>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ))}
+              </div>
             </div>
-          </div>
           </div>
     </>
   );

@@ -23,18 +23,21 @@ const FooterRenderer: React.FC = () => {
     <footer className={classes.footer}>
       <Grid container spacing={10} justifyContent="flex-start" alignItems="flex-start" style={{ paddingLeft: 100, paddingRight: 100, paddingTop: 30, paddingBottom: 30 }}>
         <Grid item xs={12} sm={9} md={6} lg={3}>
-          <div style={{ paddingBottom: 50 }}>
-            <img src={`${BASE_URL}images/logo.jpeg`} width="80px" height="70px">
-            </img>
-            <div style={{ width: 260, paddingBottom: 20 }}>
-              <Typography variant="h5" style={{ color: '#0D3823', fontSize: 24, fontFamily: 'Playfair Display', fontWeight: 900, textTransform: 'capitalize', wordWrap: 'break-word' }}>
-                Indian Shop<br />
-              </Typography>
-              <Typography variant="h5" style={{ color: '#FF6600', fontSize: 24, fontFamily: 'Proxima Nova', fontWeight: 400, textTransform: 'capitalize', wordWrap: 'break-word' }}>
-                Milano
-              </Typography>
+          <div style={{ paddingBottom: 50}}>
+            <div style={{textAlign:"center"}}>
+              <img src={`${BASE_URL}images/logo.jpeg`} width="92px" height="65px" style={{transform:"scale(1.3)"}} />
+              <div style={{ width: 260, paddingBottom: 20 }}>
+                <Typography variant="h5" style={{ color: '#0D3823', fontSize: 24, fontFamily: 'Playfair Display', fontWeight: 900, textTransform: 'capitalize', wordWrap: 'break-word' }}>
+                  Indian Shop<br />
+                </Typography>
+                <Typography variant="h5" style={{ color: '#FF6600', fontSize: 24, fontFamily: 'Proxima Nova', fontWeight: 400, textTransform: 'capitalize', wordWrap: 'break-word' }}>
+                  Milano
+                </Typography>
+              </div>
             </div>
-            <Typography>Involved in the import and distribution of asian/indian food and grocery items of all types in milan, italia ,first indian groceries shop in milan</Typography>
+            <Typography>
+              Involved in the import and distribution of asian/indian food and grocery items of all types in milan, italia ,first indian groceries shop in milan
+            </Typography>
           </div>
           <Box
             style={{ width: 255, border: "1px solid #1A3F2D" }}
