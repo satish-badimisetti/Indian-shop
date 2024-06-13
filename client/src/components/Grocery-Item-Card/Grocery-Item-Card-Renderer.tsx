@@ -52,7 +52,7 @@ const GroceryItemCardRenderer = (product: any) => {
               </div>
             </div>
           </div>
-          <div className={classes.discountContainer}>
+          <div className={classes.discountContainer} style={{display:`${item.discount > 0 ? "" : "none"}`}}>
             <div className={classes.discountText}>{item.discount}% OFF</div>
           </div>
           <CardContent className={classes.title}>{item.title} ({item.units})</CardContent>
@@ -62,7 +62,7 @@ const GroceryItemCardRenderer = (product: any) => {
           <CardContent className={classes.priceContainer}>
             <Typography className={classes.priceValue}>
               €&nbsp;{item.currentPrice}
-              {item.originalPrice && <span>€&nbsp;{item.originalPrice}</span>}
+              {item.originalPrice && ( item.discount>0 ? (<span>€&nbsp;{item.originalPrice}</span>) : "" )}
             </Typography>
           </CardContent>
           {/* <CardActions className={classes.actionButtonsContainer}>
