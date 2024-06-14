@@ -24,8 +24,8 @@ const FooterRenderer: React.FC = () => {
 
       <Grid container spacing={2} justifyContent="center" alignItems="stretch" style={{width:"90%", margin:"auto"}}>
         <Grid container justifyContent='center'  xs={12} sm={9} md={6} lg={5} style={{ paddingTop:"10px"}}>
-          <Grid container justifyContent='center' style={{ paddingBottom: 0}} lg={12} >
-            <Grid item style={{textAlign:"center"}} lg={4}>
+          <Grid container justifyContent='center' lg={12} >
+            <Grid item style={{textAlign:"center"}} lg={3}>
               <img src={`${BASE_URL}images/logo.jpeg`} width="92px" height="55px" style={{transform:"scale(1.5)", marginTop:"20px", marginBottom:"10px"}} />
               <div>
                 <Typography variant="h5" style={{ color: '#0D3823', fontSize: 24, fontFamily: 'Playfair Display', fontWeight: 900, textTransform: 'capitalize', wordWrap: 'break-word' }}>
@@ -36,7 +36,7 @@ const FooterRenderer: React.FC = () => {
                 </Typography>
               </div>
             </Grid>
-            <Grid item lg={7}>
+            <Grid item lg={7} style={{marginLeft:"10px"}}>
               <Typography style={{paddingBottom:"20px", paddingRight:"15px"}} align="justify" gutterBottom>
                 Involved in the import and distribution of asian/indian food and grocery items of all types in milan, italia ,first indian groceries shop in milan
               </Typography>
