@@ -57,7 +57,7 @@ const ProductListingPageRenderer: React.FC = () => {
 
   return (
     <>
-    {/* <ProductsBannerRenderer /> */}
+    <ProductsBannerRenderer />
     <Container maxWidth="lg" className={classes.container}>
       <div className={classes.header}>
         <div className={classes.available} >
