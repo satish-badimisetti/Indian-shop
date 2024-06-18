@@ -30,6 +30,7 @@ const GroceryItemCardRenderer = (product: any) => {
       Math.round(product.product.DiscountedPrice * 100) / 100),
     (item.originalPrice = Math.round(product.product.Price * 100) / 100),
     (item.image = product.product.PROD_IMG),
+    (item.brand=product.product.Brand),
     (item.units=product.product.Units);
   }
 
@@ -55,9 +56,9 @@ const GroceryItemCardRenderer = (product: any) => {
           <div className={classes.discountContainer} style={{display:`${item.discount > 0 ? "" : "none"}`}}>
             <div className={classes.discountText}>{item.discount}% OFF</div>
           </div>
-          <CardContent className={classes.title}>{item.title} ({item.units})</CardContent>
-          <CardContent className={classes.price}>
-          €&nbsp;{item.pricePerVolume}
+          <CardContent className={classes.title}>{item.brand} - {item.title} </CardContent>
+          <CardContent className={classes.price} >
+          €&nbsp;{item.pricePerVolume} / {item.units}
           </CardContent>
           <CardContent className={classes.priceContainer}>
             <Typography className={classes.priceValue}>
