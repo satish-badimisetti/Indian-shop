@@ -7,6 +7,9 @@ import GroceryItemForm from '../components/Components-Grocery-Item/Grocery-Item-
 import ProductListingPageRenderer from '../components/Product-Listing-Page/Product-Listing-Page-Renderer';
 import GroceryItemsList from '../components/Components-Grocery-Item/Grocery-Items-List';
 import HomeComponentRenderer from '../components/Components-Home/Home-Component-Renderer';
+import AdminMain from '../components/admin-components/Admin-Main';
+import Inventory from '../components/admin-components/Inventory';
+
 
 export default () => {
 
@@ -15,6 +18,9 @@ export default () => {
         <Routes>
             <Route path='/' element={<SignInRenderer />} >
                 
+            </Route>
+            <Route path="admin" element={<AdminMain />} >
+                <Route path="inventory" element={<Inventory />} />
             </Route>
             <Route path='login' element={<SignInRenderer />} />
             <Route path='signup' element={<SignUp />} />
