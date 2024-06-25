@@ -51,7 +51,7 @@ const server = https.createServer(
   },
   app
 );
-const port = 3000;
+const port = 8080;
 
 // Start the server
 // const connectString="mongodb+srv://krishnaraodemudamma:cVKRP58Co5WPp8LS@shoppingapp.kjexwsq.mongodb.net/shopping-app?retryWrites=true&w=majority&appName=ShoppingApp";
