@@ -22,8 +22,8 @@ export default function AddProduct(){
     }
     return(
         <>
-            {/* <Form fieldsArray={fieldsArray} columns={2} title={title} submitHandler={submitHandler}/> */}
-            Will be coming soon
+            <Form fieldsArray={fieldsArray} columns={2} title={title} submitHandler={submitHandler}/>
+            {/* Will be coming soon */}
         </>
     )
 }

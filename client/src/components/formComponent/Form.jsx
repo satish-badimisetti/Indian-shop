@@ -1,33 +1,40 @@
 import React, {useEffect, useState} from 'react';
 import FormField from './formFieldComponent/FormField';
+import FormFieldMUI from './formFieldComponent/FormFieldMUI';
 
 export default function Form({title, columns=1, fieldsArray, submitHandler}){
     const [fieldsValues,setFieldsValues]=useState({});
     const [errors,setErrors]=useState({});
-    // const [errorCount,setErrorCount]=useState(0);
+    const [errorCount,setErrorCount]=useState(0);
     const [touched,setTouched]=useState([]);
     useEffect(()=>{
+        let newErrorObject={};
+        let newFieldValuesObject={};
+        let newTouched=[];
         fieldsArray.forEach((fieldObject)=>{
-            console.log(fieldObject.fieldName);
-            if(Object.keys(fieldObject.validationSchema).indexOf('notEmpty')>-1)
-                updateErrors(fieldObject.fieldName,1);
-            else
-                updateFields({[fieldObject.fieldName]:""});
+            if(Object.keys(fieldObject.validationSchema).indexOf('notEmpty')>-1){
+                newErrorObject={...newErrorObject,[fieldObject.fieldName]:1};
+            }
+            else{
+                newTouched.push(fieldObject.fieldName);
+                newFieldValuesObject={...newFieldValuesObject,[fieldObject.fieldName]:""};
+            }
         });
+        setTouched(newTouched);
+        setErrors(newErrorObject);
+        setFieldsValues(newFieldValuesObject);
     },[]);
     const updateFields=(fieldValueObject)=>{
         const fieldName=Object.keys(fieldValueObject)[0];
-        const newTouched=[...touched,Object.keys(fieldValueObject)[0]];
-        if(touched.indexOf(fieldName)===-1) setTouched(newTouched);
-        console.log({...fieldsValues,...fieldValueObject});
+        if(touched.indexOf(fieldName)===-1){
+            setTouched([...touched,Object.keys(fieldValueObject)[0]]);
+        }
         setFieldsValues({...fieldsValues,...fieldValueObject});
     }
     const updateErrors=(fieldName,errorsNumber)=>{
-        console.log({...errors,[fieldName]:errorsNumber});
-        setErrors({...errors,[fieldName]:errorsNumber});
-    }
-    const getErrorCount=()=>{
-        return Object.values(errors).reduce((acc,value)=>acc+value,0);
+        const newErrorsObject={...errors,[fieldName]:errorsNumber}
+        setErrorCount(Object.values(newErrorsObject).reduce((acc,value)=>acc+value,0));
+        setErrors(newErrorsObject);
     }
     const handleSubmit=()=>{
         submitHandler(fieldsValues);
@@ -101,8 +108,8 @@ export default function Form({title, columns=1, fieldsArray, submitHandler}){
                 <div style={styles.formRow} key={i}>
                     {
                         forInnerFields.map((thisField,_id)=>{
-                            return <FormField key={`${i}_${_id}`} fieldObject={thisField} setterFunction={updateFields} errorUpdater={updateErrors}>
-                            </FormField>
+                            return <FormFieldMUI key={`${i}_${_id}`} fieldObject={thisField} setterFunction={updateFields} errorUpdater={updateErrors}>
+                            </FormFieldMUI>
                         })
                     }
                 </div>
@@ -117,18 +124,14 @@ export default function Form({title, columns=1, fieldsArray, submitHandler}){
             </div>
             <>
                 {
-                    // fieldsArray.map((field,_id)=>
-                    //     <FormField key={_id} fieldObject={field} setterFunction={updateFields} errorUpdater={updateErrors}>
-                    //     </FormField>
-                    // )
                     displayForFields(fieldsArray)
                 }
             </>
             <div style={styles.submitButtonDiv}>
                 <button
                     onClick={handleSubmit}
-                    style={( getErrorCount()===0) ? styles.submitButton : styles.disabledButton}
-                    disabled={!( getErrorCount===0)}>
+                    style={( touched.length===fieldsArray.length && errorCount===0) ? styles.submitButton : styles.disabledButton}
+                    disabled={!(touched.length===fieldsArray.length && errorCount===0)}>
                         Submit
                 </button>
             </div>

@@ -6,7 +6,7 @@ import GetTableRow from "./GetTableRow";
 
 import "./Inventory.css";
 import { calculate, roundOff1 } from "./calculations";
-import { Button, IconButton, MenuItem, Select, TextField, Modal, Dialog, DialogContent, DialogActions, DialogContentText } from "@mui/material";
+import { Button, IconButton, MenuItem, Select, TextField, Modal, Dialog, DialogContent, DialogActions, DialogContentText, Grid } from "@mui/material";
 
 import SearchIcon from '@mui/icons-material/Search';
 import AddProduct from "./AddProductComponent/AddProduct";
@@ -327,25 +327,28 @@ export default function Inventory(){
                 open={productAddState}
                 onClose={handleAddProductDivClose}
             >
-                <div style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 900,
-                    border: '2px solid #000',
-                    padding:'4px',
-                    background:"white"
+                <Grid
+                    sx={{
+                        position:"absolute",
+                        top:"50%",
+                        left:"50%",
+                        transform:'translate(-50%,-50%)',
+                        width:{xs:"100%",sm:'80%',md:'60%',lg:'60%',xl:'50%'}
+                    }}
+                    style={{
+                        background:"white"
                     }}
                 >
                     <AddProduct />
-                </div>
+                </Grid>
             </Modal>
             <div className="productsDisplayDiv">
                 <table>
                     <thead>
                         <tr>
-                            <th>Actions</th>
+                            <th>
+                                Actions
+                            </th>
                             {
                                 productFields.map(
                                     (field,index)=> {

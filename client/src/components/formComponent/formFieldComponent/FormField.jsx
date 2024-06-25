@@ -16,18 +16,9 @@ export default function FormField({fieldObject, setterFunction, errorUpdater}){
         const thisValue=e.target.value;
         const fieldName=e.target.name;
         let errorsResulted=validateFields(thisValue,validationSchema);
-        console.log(errorsResulted);
-        // if(thisValue===""){
-        //     if(validationSchema.notEmpty){
-        //         errorsResulted=validateFields(thisValue,validationSchema);
-        //     }
-        // }
-        // else{
-        //     errorsResulted=validateFields(thisValue,validationSchema);
-        // }
         setFieldValue(thisValue);
-        setterFunction({[fieldName]:thisValue});
         setErrors(errorsResulted);
+        setterFunction({[fieldName]:thisValue});
         errorUpdater(fieldName,errorsResulted.length);
     }
     const handleCheckboxChange=(e)=>{
@@ -40,10 +31,12 @@ export default function FormField({fieldObject, setterFunction, errorUpdater}){
             newChecked=selectedArray.filter((item) => item !== thisValue);
         }
         const errorsResulted=validateFields(newChecked,validationSchema);
+        
         setSelectedArray(newChecked);
-        setterFunction({[fieldName]:newChecked});
         setErrors(errorsResulted);
-        errorUpdater({[fieldName]:errorsResulted});
+        
+        setterFunction({[fieldName]:newChecked});
+        errorUpdater(fieldName,errorsResulted.length);
     }
     const styles={
         formField:{
