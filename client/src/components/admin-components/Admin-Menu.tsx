@@ -83,7 +83,7 @@ export default function MenuAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={()=>{handleMenuItemClick("addproduct")}} style={{margin:0, paddingBlock:"2px"}}>Add Product</MenuItem>
+                
                 <MenuItem onClick={()=>{handleMenuItemClick("inventory")}} style={{margin:0, paddingBlock:"2px"}}>Inventory</MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose} style={{margin:0, paddingBlock:"2px"}}>Logout</MenuItem>
