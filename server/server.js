@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const app = express();
 
 // Serve the static files (HTML, CSS, JS) from the public folder
-app.use(express.static("public"));
+// app.use(express.static("public"));
 // app.use(express.json());
 // app.use(bodyParser.json());
 // app.use(express.json({
@@ -45,10 +45,10 @@ const certificate = fs.readFileSync("./cert/cert.pem", "utf8");
 
 // Create an HTTPS server
 const server = https.createServer(
-  {
-    key: privateKey,
-    cert: certificate,
-  },
+  // {
+  //   key: privateKey,
+  //   cert: certificate,
+  // },
   app
 );
 const port = 8080;
@@ -68,6 +68,6 @@ const port = 8080;
 //   }
 
 // Start the server
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on https://localhost:${port}`);
 });
