@@ -45,10 +45,10 @@ const certificate = fs.readFileSync("./cert/cert.pem", "utf8");
 
 // Create an HTTPS server
 const server = https.createServer(
-  {
-    key: privateKey,
-    cert: certificate,
-  },
+  // {
+  //   key: privateKey,
+  //   cert: certificate,
+  // },
   app
 );
 const port = 8080;
