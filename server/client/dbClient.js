@@ -15,9 +15,10 @@ const dbName = config.getMongoDbName();
 async function createDocDBConnection() {
   if (docDbInstance) return docDbInstance;
 
-  var client = MongoClient.connect(config.getMongoDbUrl(), {
-    tlsCAFile: [caFilePath],
-  });
+  // var client = MongoClient.connect(config.getMongoDbUrl(), {
+  //   tlsCAFile: [caFilePath],
+  // });
+  var client = MongoClient.connect(config.getMongoDbUrl());
 
   docDbInstance = client;
   return client;
