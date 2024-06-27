@@ -9,7 +9,7 @@ export default function AdminMain(){
     return (
         <>
             <AdminMenubar />
-            <Outlet />
+                <Outlet />
             <Typography
                 variant="body2"
                 color="inherit"

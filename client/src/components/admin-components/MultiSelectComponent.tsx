@@ -1,8 +1,9 @@
 import React, {useRef,useState, useEffect} from "react";
-import { Menu, MenuItem, Switch} from "@mui/material";
+import { Menu, MenuItem, Switch, Chip} from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import {TextField, Autocomplete} from "@mui/material";
 
+import LabelChip from "./LabelChip";
 
 export default function MultiSelectComponent(props:any){
     const optionsArray=props.options;
@@ -41,7 +42,16 @@ export default function MultiSelectComponent(props:any){
     return(
         <>
             <div style={{display:"flex", alignContent:"flex-end"}}>
-                <div style={{flex:1}}>{valuesArray.join(", ")}</div>
+                <div style={{flex:1, flexDirection:"column"}}>
+                    {/* {valuesArray.join(", ")} */}
+                    {
+                        valuesArray.map(
+                            (value:any,_id:any)=>{
+                                return <LabelChip label={value} index={optionsArray.indexOf(value)}/>
+                            }
+                        )
+                    }
+                </div>
                 <div ref={ref} onClick={handleClick} style={{fontSize:"10px", cursor:"pointer", display:`${editState?"":'none'}`}} >
                     <EditIcon fontSize="small"/>
                 </div>

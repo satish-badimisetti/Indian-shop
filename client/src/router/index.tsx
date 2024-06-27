@@ -9,7 +9,7 @@ import GroceryItemsList from '../components/Components-Grocery-Item/Grocery-Item
 import HomeComponentRenderer from '../components/Components-Home/Home-Component-Renderer';
 import AdminMain from '../components/admin-components/Admin-Main';
 import Inventory from '../components/admin-components/Inventory';
-
+import AddProduct from '../components/admin-components/AddProductComponent/AddProduct';
 
 export default () => {
 
@@ -21,6 +21,7 @@ export default () => {
             </Route>
             <Route path="admin" element={<AdminMain />} >
                 <Route path="inventory" element={<Inventory />} />
+                <Route path="addproduct" element={<AddProduct />} />
             </Route>
             <Route path='login' element={<SignInRenderer />} />
             <Route path='signup' element={<SignUp />} />

@@ -78,13 +78,14 @@ export default function GetTableRow(props:any){
     }
     
     return(
-        <>
+        <tr style={{background:`${props.checkStatus?"rgba(250,230,200,0.5)":"white"}`}}>
         {
             Object.keys(rowData).length>0 && (
                 <>
                 {
                     actions.length>0 && (
-                        <td style={{display:"flex", alignItems:"center"}}>
+                        <td>
+                            <div style={{display:"flex", alignItems:"center"}}>
                         {
                             actions.map((action:{action:string,func:Function}, index:any)=>{
                                 if(action.action=="edit"){
@@ -143,6 +144,7 @@ export default function GetTableRow(props:any){
                                 } 
                             })
                         }
+                            </div>
                         </td>
                     )
                 }
@@ -151,37 +153,33 @@ export default function GetTableRow(props:any){
                         (field:any,index:any)=>{
                             if(field.type=="display"){
                                 return (
-                                    <td key={index}>{rowData[field.field]}</td>
+                                    <td key={index} style={field.style}>{rowData[field.field]}</td>
                                 )
                             }
                             else if(field.type=="text"){
                                 return (
-                                    <td key={index}>
+                                    <td key={index} style={field.style}>
                                         <input
+                                            size={field.size?field.size:4}
                                             className="text-input"
                                             type="text"
                                             value={rowData[field.field]}
                                             name={field.field}
                                             onChange={(e)=>onChangeInputField(e)}
-                                            style={{
-                                                width:`${field.width}`,
-                                            } }
                                             disabled={editState? false:true}
+                                            
                                         />
                                     </td>
                                 )
                             }
                             else if(field.type=="select"){
                                 return (
-                                    <td key={index}>
+                                    <td key={index} style={field.style}>
                                         <select
                                             className="select-input"
                                             value={rowData[field.field]}
                                             name={field.field}
                                             onChange={(e)=>onChangeInputField(e)}
-                                            style={{
-                                                width:`${field.width}`,
-                                            } }
                                             disabled={editState? false:true}
                                         >
                                             {
@@ -205,7 +203,7 @@ export default function GetTableRow(props:any){
                             }
                             else if(field.type=="multiSelect"){
                                 return(
-                                    <td key={index}>
+                                    <td key={index} style={field.style}>
                                         <MultiSelectComponent 
                                             options={field.selectOptions}
                                             editState={editState}
@@ -219,7 +217,7 @@ export default function GetTableRow(props:any){
                             }
                             else if(field.type=="switch"){
                                 return(
-                                    <td key={index}>
+                                    <td key={index} style={field.style}>
                                         <Switch
                                             size="small"
                                             disabled={editState? false:true}
@@ -234,7 +232,7 @@ export default function GetTableRow(props:any){
                                 const expression=field.calc;
                                 const calculatedValue=roundOff1(calculate(expression,rowData));
                                 return (
-                                    <td key={index}>{calculatedValue}</td>
+                                    <td key={index} style={field.style}>{calculatedValue}</td>
                                 )
                             }
                         }
@@ -245,6 +243,6 @@ export default function GetTableRow(props:any){
         }
             
             
-        </>
+        </tr>
     )
 }

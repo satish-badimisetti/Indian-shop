@@ -18,18 +18,18 @@ interface filterValuesObejct{
 export default function Inventory(){
     
     const productFields=[
-        {field:"PROD_ID",key:true,title:"Prod Id",type:"display"},
-        {field:"Name",title:"Prod Name",type:"display",toolbar:["search"]},
-        {field:"Cat_Name",title:"Cat Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"]},
-        {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"]},
-        {field:"NoofUnits",title:"No of Units",type:"text", width:"50px"},
-        {field:"Units",title:"Units",type:"select",selectOptions:["kg","l","Nos"], width:"50px"},
-        {field:"NetWeight",title:"Net Weight",type:"display"},
-        {field:"Quantity",title:"Qty.",type:"display"},
-        {field:"Price",title:"Price",type:"text", width:"50px",toolbar:["sort"]},
-        {field:"Discount",title:"Disc. %",type:"text", width:"20px",toolbar:["sort"]},
-        {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"display"},
-        {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"]},
+        {field:"PROD_ID",key:true,title:"Prod Id",type:"display", style:{ textAlign:"center"}},
+        {field:"Name",title:"Prod Name",type:"display",toolbar:["search"], style:{textAlign:"left"}},
+        {field:"Cat_Name",title:"Cat Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{textAlign:"left"}},
+        {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{textAlign:"left"}},
+        {field:"NoofUnits",title:"No of Units",type:"text", size:3, style:{textAlign:"right"}},
+        {field:"Units",title:"Units",type:"select",selectOptions:["kg","l","Nos"], style:{textAlign:"right"}},
+        {field:"NetWeight",title:"Net Weight",type:"display", style:{textAlign:"right"}},
+        {field:"Quantity",title:"Qty.",type:"display", style:{textAlign:"right"}},
+        {field:"Price",title:"Price",type:"text", toolbar:["sort"], style:{ textAlign:"right"}},
+        {field:"Discount",title:"Disc. %",type:"text", toolbar:["sort"], style:{ textAlign:"center"}},
+        {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"display", style:{textAlign:"center"}},
+        {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ textAlign:"left"}},
         {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]}},
         {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"display"},
         {field:"Product_Visibility",title:"Visibility",type:"switch",toolbar:["select"],selectOptions:["yes","no"]}
@@ -282,7 +282,6 @@ export default function Inventory(){
                     gap:"10px"
                 }}
             >
-                <Button variant="outlined" onClick={handleAddProductDivOpen}>Add Product</Button>
                 <Button variant="outlined" onClick={handleDiscountDivOpen} disabled={keysChecked.length===0?true:false}>Update Discount</Button>
 
             </div>
@@ -323,25 +322,7 @@ export default function Inventory(){
                 </DialogActions>  
             </Dialog>
 
-            <Modal
-                open={productAddState}
-                onClose={handleAddProductDivClose}
-            >
-                <Grid
-                    sx={{
-                        position:"absolute",
-                        top:"50%",
-                        left:"50%",
-                        transform:'translate(-50%,-50%)',
-                        width:{xs:"100%",sm:'80%',md:'60%',lg:'60%',xl:'50%'}
-                    }}
-                    style={{
-                        background:"white"
-                    }}
-                >
-                    <AddProduct />
-                </Grid>
-            </Modal>
+            
             <div className="productsDisplayDiv">
                 <table>
                     <thead>
@@ -362,21 +343,29 @@ export default function Inventory(){
                                                                     field.toolbar?.map(
                                                                         (tool,index)=>{
                                                                             if(tool=="sort"){
-                                                                                let targetSortOrder=-1;
-                                                                                if(sortField[0]==field.field && sortField[1]==-1){
-                                                                                    targetSortOrder=1
+                                                                                let targetSortOrder=1;
+                                                                                let rotateAngle=180;
+                                                                                let color="white";
+                                                                                if(sortField[0]==field.field){
+                                                                                    color="#00ff00";
+                                                                                    if(sortField[1]==1){
+                                                                                        targetSortOrder=-1;
+                                                                                        rotateAngle=0;
+                                                                                    }
+                                                                                   
                                                                                 }
                                                                                 return(
                                                                                     <IconButton
                                                                                         style={{height:"10px", width:"10px", marginLeft:"10px"}}
-                                                                                        size="small"
+                                                                                        size="medium"
                                                                                         onClick={()=>onSortClicked(field.field,targetSortOrder)}
                                                                                         disabled={editingRows>0}
                                                                                     >
                                                                                         <FilterListIcon
                                                                                             fontSize="small"
                                                                                             key={index}
-                                                                                            style={{color:"white"}}
+                                                                                            style={{color:color, transform:`rotate(${rotateAngle}deg)`}}
+                                                                                            
                                                                                         />
                                                                                     </IconButton>
                                                                                 )
@@ -453,7 +442,7 @@ export default function Inventory(){
                             productsToShow.map(
                                 (thisProduct:any, index:any)=>{
                                     return (
-                                        <tr>
+                                        
                                             <GetTableRow
                                                 tableRowData={thisProduct}
                                                 fieldsData={productFields}
@@ -462,7 +451,7 @@ export default function Inventory(){
                                                 editFreezeFunction={updateEditingRows}
                                                 checkStatus={keysChecked.indexOf(thisProduct[keyFieldName])>-1}
                                             />
-                                        </tr>
+                                        
                                     )
                                 }
                             )

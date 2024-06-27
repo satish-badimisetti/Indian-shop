@@ -1,5 +1,6 @@
 import React from "react"
 import Form from "../../formComponent/Form"
+import {Grid} from "@mui/material"
 export default function AddProduct(){
     const title="Add Product";
     const fieldsArray=[
@@ -21,9 +22,27 @@ export default function AddProduct(){
         console.log(data);
     }
     return(
-        <>
-            <Form fieldsArray={fieldsArray} columns={2} title={title} submitHandler={submitHandler}/>
+        <div style={{
+            display:"flex",
+            justifyContent:"center",
+            margin:"auto",
+            marginTop:'10px',
+            marginBottom:'10px',
+            width:"90%"
+        }}>
+                <Grid
+                    sx={{
+
+                        width:{xs:"100%",sm:'80%',md:'60%',lg:'60%',xl:'50%'}
+                    }}
+                    style={{
+                        background:"white"
+                    }}
+                >
+                    <Form fieldsArray={fieldsArray} columns={2} title={title} submitHandler={submitHandler}/>
+                </Grid>
+            
             {/* Will be coming soon */}
-        </>
+        </div>
     )
 }
