@@ -68,6 +68,6 @@ const port = 8080;
 //   }
 
 // Start the server
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on https://localhost:${port}`);
 });
