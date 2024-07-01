@@ -19,11 +19,11 @@ export default function Inventory(){
     
     const productFields=[
         {field:"PROD_ID",key:true,title:"Prod Id",type:"display", style:{ textAlign:"center"}},
-        {field:"Name",title:"Prod Name",type:"display",toolbar:["search"], style:{textAlign:"left"}},
+        {field:"Name",title:"Prod Name",type:"display",toolbar:["search"], style:{width:"300px",textAlign:"left"}},
         {field:"Cat_Name",title:"Cat Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{textAlign:"left"}},
         {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{textAlign:"left"}},
         {field:"NoofUnits",title:"No of Units",type:"text", size:3, style:{textAlign:"right"}},
-        {field:"Units",title:"Units",type:"select",selectOptions:["kg","l","Nos"], style:{textAlign:"right"}},
+        {field:"Units",title:"Units",type:"select",selectOptions:["kg","l","Nos"], toolbar:["select"], style:{textAlign:"right"}},
         {field:"NetWeight",title:"Net Weight",type:"display", style:{textAlign:"right"}},
         {field:"Quantity",title:"Qty.",type:"display", style:{textAlign:"right"}},
         {field:"Price",title:"Price",type:"text", toolbar:["sort"], style:{ textAlign:"right"}},
