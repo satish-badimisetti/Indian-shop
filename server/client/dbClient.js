@@ -15,9 +15,10 @@ const dbName = config.getMongoDbName();
 async function createDocDBConnection() {
   if (docDbInstance) return docDbInstance;
 
-  var client = MongoClient.connect(config.getMongoDbUrl(), {
-    tlsCAFile: [caFilePath],
-  });
+  // var client = MongoClient.connect(config.getMongoDbUrl(), {
+  //   tlsCAFile: [caFilePath],
+  // });
+  var client = MongoClient.connect(config.getMongoDbUrl());
 
   docDbInstance = client;
   return client;
@@ -101,9 +102,25 @@ async function getProductsByFilter(filter) {
     throw err;
   }
 }
+async function getBrands() {
+  const client = await createDocDBConnection();
+
+  try {
+    const db = client.db(dbName);
+    const col = db.collection("Brands");
+
+    const products = await col.find({}).toArray();
+    console.log("all Brands " + JSON.stringify(products))
+    return products;
+  } catch (err) {
+    console.error("Error fetching Brands: ", err);
+    throw err;
+  }
+}
 module.exports = {
   getAllProducts,
   getProductCategories,
   getProductsByCategoryId,
-  getProductsByFilter
+  getProductsByFilter,
+  getBrands
 };

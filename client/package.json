@@ -9,6 +9,8 @@
     "@mui/x-date-pickers": "^7.1.0",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@babel/plugin-proposal-private-property-in-object": "latest",
+    "material-ui-dropzone": "latest",
     "axios": "^1.6.8",
     "context": "^3.0.28",
     "contexts": "^0.0.0",

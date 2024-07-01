@@ -1,5 +1,7 @@
 const apiConfig = {
-	BASE_URL: "https://3.66.63.30:3000/",
+	// BASE_URL: "https://3.66.63.30:3000/",
+	// BASE_URL: "http://3.79.130.16:3000/",
+	BASE_URL: "https://18.198.91.78:8080/",
 	GET: {
 		GET_PRODUCTS: "/products/getproducts",
 		GET_CATEGORIES: "/products/allcategories",
@@ -8,7 +10,8 @@ const apiConfig = {
 		PRODUCTS:"/products/getproducts",
 		CATEGORIES:"/products/categories",
 		PRODUCTSBYFILTER:"/products/getProductsByFilter",
-		PRODUCTSBYCATID:"/products/getProductsByCategoryId"
+		PRODUCTSBYCATID:"/products/getProductsByCategoryId",
+		BRANDS:"/products/getBrands",
 	},
 	PUT: {
 	},

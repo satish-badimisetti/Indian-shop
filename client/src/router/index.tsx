@@ -6,17 +6,28 @@ import ProductDetailsRenderer from '../components/Components-Product-Details/Pro
 import GroceryItemForm from '../components/Components-Grocery-Item/Grocery-Item-Form';
 import ProductListingPageRenderer from '../components/Product-Listing-Page/Product-Listing-Page-Renderer';
 import GroceryItemsList from '../components/Components-Grocery-Item/Grocery-Items-List';
-
+import HomeComponentRenderer from '../components/Components-Home/Home-Component-Renderer';
+import AdminMain from '../components/admin-components/Admin-Main';
+import Inventory from '../components/admin-components/Inventory';
+import AddProduct from '../components/admin-components/AddProductComponent/AddProduct';
 
 export default () => {
 
 
     return (
         <Routes>
-            <Route path='/' element={<SignInRenderer />} />
+            <Route path='/' element={<SignInRenderer />} >
+                
+            </Route>
+            <Route path="admin" element={<AdminMain />} >
+                <Route path="inventory" element={<Inventory />} />
+                <Route path="addproduct" element={<AddProduct />} />
+            </Route>
             <Route path='login' element={<SignInRenderer />} />
             <Route path='signup' element={<SignUp />} />
-            <Route path='home' element={<App />}>
+            <Route path='app' element={<App />}>
+                <Route path='home' element={<HomeComponentRenderer />} />
+                <Route path='productList/category/:categoryid' element={<ProductListingPageRenderer />} />
             </Route>
             <Route path='productDetail' element={<ProductDetailsRenderer
                 name={"Product Name"}
@@ -30,7 +41,7 @@ export default () => {
             />} />
             <Route path='addProduct' element={<GroceryItemForm />} />
             <Route path='productEdit' element={<GroceryItemsList />} />
-            <Route path='productList/category/:categoryid' element={<ProductListingPageRenderer />} />
+            
 
             {/* <Route path='forgot-password' element={<ForgotPassword />} />
             <Route element={<Layout ensureAuthenticated />}>{getRoutesByRole(role)}</Route>

@@ -4,14 +4,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Box, Typography, Button } from "@material-ui/core";
 import Brightness5Icon from '@mui/icons-material/Brightness5';
 const backgroundImage = 'url("../assets/images/Homepage_Banner.png")';
+import apiConfig from "../../api/client/endpoint";
+const BASE_URL = apiConfig.BASE_URL;
 
 const useStyles = makeStyles((theme) => ({
   banner: {
     width: "100%",
     height: 540,
-    backgroundImage: `linear-gradient(78deg, #0D3823 0%, #8DEDBE 100%), url(${'../Images/Homepage_Banner.png'})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
+    // backgroundImage: backgroundImage, Not working need to fix it
+    background: "linear-gradient(78deg, #0D3823 0%, #8DEDBE 100%)",
   },
   content: {
     padding: theme.spacing(4),
@@ -91,27 +92,30 @@ const BannerRenderer: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.banner} elevation={0}>
-      <Box className={classes.content}>
-        <div className={classes.container}>
-          <div className={classes.textContainer}>
-            <Typography variant="h3">Fresh & Healthy<br />Vegetables</Typography>
-          </div>
-          <div className={classes.buttonContainer}>
-            <Button className={classes.buttonText}>
-              Shop Now
-            </Button>
-          </div>
-          < div className={classes.starCircle} >
-            <Brightness5Icon className={classes.icon} />
-            <div className={classes.text}>
-              <Typography variant="h5">50%</Typography>
-              <Typography variant="h6">OFF</Typography>
-            </div>
-          </div >
-        </div>
-      </Box>
-    </Paper>
+    <>
+      <img src={`${BASE_URL}images/banner.png`} style={{width:"100%", height:"400px"}}/>
+    </>
+    // <Paper className={classes.banner} elevation={0}>
+    //   <Box className={classes.content}>
+    //     <div className={classes.container}>
+    //       <div className={classes.textContainer}>
+    //         <Typography variant="h3">Fresh & Healthy<br />Vegetables</Typography>
+    //       </div>
+    //       <div className={classes.buttonContainer}>
+    //         <Button className={classes.buttonText}>
+    //           Shop Now
+    //         </Button>
+    //       </div>
+    //       < div className={classes.starCircle} >
+    //         <Brightness5Icon className={classes.icon} />
+    //         <div className={classes.text}>
+    //           <Typography variant="h5">50%</Typography>
+    //           <Typography variant="h6">OFF</Typography>
+    //         </div>
+    //       </div >
+    //     </div>
+    //   </Box>
+    // </Paper>
   );
 };
 
