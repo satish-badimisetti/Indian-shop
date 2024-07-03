@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const app = express();
 
 // Serve the static files (HTML, CSS, JS) from the public folder
-// app.use(express.static("public"));
+app.use(express.static("public"));
 // app.use(express.json());
 // app.use(bodyParser.json());
 // app.use(express.json({
