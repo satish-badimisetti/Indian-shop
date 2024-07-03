@@ -5,10 +5,13 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { FormControlLabel, InputBase, Checkbox, Typography, Container, Box, Button, Link, Grid, Avatar } from "@mui/material";
 import { useStyles } from './form.styles';
 
+
+
 const defaultTheme = createTheme();
 
 const SignUp: React.FC = () => {
   const classes = useStyles();
+  
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -17,6 +20,8 @@ const SignUp: React.FC = () => {
       email: data.get("email"),
       password: data.get("password"),
     });
+    
+
   };
 
   return (

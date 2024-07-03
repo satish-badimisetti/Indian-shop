@@ -12,6 +12,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import Avatar from '@mui/material/Avatar';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
@@ -19,6 +20,7 @@ import apiConfig from "../../api/client/endpoint";
 import { green } from '@material-ui/core/colors';
 import Box from '@material-ui/core';
 import LocationSearchRenderer from './Location-Search-Renderer';
+import { useAuth } from '../Authentication-Components/Auth';
 const BASE_URL = apiConfig.BASE_URL;
 
 
@@ -125,6 +127,7 @@ const NavbarRenderer = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
+  const auth=useAuth();
 
   //category menu dropdown
   const [categoryMenuAnchor, setCategoryMenuAnchor]=useState<null | HTMLElement>(null);
@@ -157,12 +160,9 @@ const NavbarRenderer = () => {
   const handleCartClick = () => {
     setIsCartOpen(!isCartOpen);
   };
-
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  
-  
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -171,6 +171,7 @@ const NavbarRenderer = () => {
   }
   return (
     <div className={classes.root}>
+      
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <img src={`${BASE_URL}images/logo.jpeg`} width="88px" height="50px" onClick={backToHome} style={{cursor:"pointer"}}/>
@@ -225,80 +226,85 @@ const NavbarRenderer = () => {
           </IconButton> */}
         </Toolbar>
         <Toolbar style={{gap: '30px'}}>
-          <div className={classes.menuContainer}>
-            <Button
-              id="category_list"
-              aria-controls={menuCategoryOpen ? 'category-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={menuCategoryOpen ? 'true' : undefined}
-              onClick={handleClickMenuCategory}
-            >
-              Categories
+          
+            <div className={classes.menuContainer}>
+              <Button
+                id="category_list"
+                aria-controls={menuCategoryOpen ? 'category-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={menuCategoryOpen ? 'true' : undefined}
+                onClick={handleClickMenuCategory}
+              >
+                Categories
+                  {
+                    menuCategoryOpen ? <KeyboardArrowDownOutlinedIcon style={{paddingLeft: '20px'}} /> : <KeyboardArrowUpOutlinedIcon style={{paddingLeft: '20px'}} />
+                  }
+              </Button>
+              <Menu
+                id="cateogry-menu"
+                anchorEl={categoryMenuAnchor}
+                open={menuCategoryOpen}
+                
+                onClose={handleCloseMenuCategory}
+                MenuListProps={{
+                  'aria-labelledby': 'category_list',
+                }}
+                style={{height:"500px"}}
+              >
                 {
-                  menuCategoryOpen ? <KeyboardArrowDownOutlinedIcon style={{paddingLeft: '20px'}} /> : <KeyboardArrowUpOutlinedIcon style={{paddingLeft: '20px'}} />
+                  categories.map((x) => {
+                    return (
+                      <div className={classes.menuItem}>
+                        <MenuItem onClick={()=>handleCategoryClick(x.CAT_ID)}  className={classes.categoryMenuItem} 
+                          sx={[
+                            {
+                              '&:hover': {
+                                color: 'green',
+                                backgroundColor: 'white',
+                                fontWeight:'bold'
+                              },
+                            }
+                          ]}
+                        >
+                        <Avatar
+                            alt="Remy Sharp"
+                            src={`${BASE_URL}images/CATEGORIES/${x.CAT_ID}.png`}
+                            sx={{ width: 25, height: 25, mr:1 }}
+                            variant='square'
+                          />
+                          {x.CAT_NAME}
+                        </MenuItem>  
+                      </div>
+                    );
+                  })
                 }
-            </Button>
-            
-            <Menu
-              id="cateogry-menu"
-              anchorEl={categoryMenuAnchor}
-              open={menuCategoryOpen}
-              
-              onClose={handleCloseMenuCategory}
-              MenuListProps={{
-                'aria-labelledby': 'category_list',
-              }}
-              style={{height:"500px"}}
-            >
-              {
-                categories.map((x) => {
-                  return (
-                    <div className={classes.menuItem}>
-                      <MenuItem onClick={()=>handleCategoryClick(x.CAT_ID)}  className={classes.categoryMenuItem} 
-                        sx={[
-                          {
-                            '&:hover': {
-                              color: 'green',
-                              backgroundColor: 'white',
-                              fontWeight:'bold'
-                            },
-                          }
-                        ]}
-                      >
-                      <Avatar
-                          alt="Remy Sharp"
-                          src={`${BASE_URL}images/CATEGORIES/${x.CAT_ID}.png`}
-                          sx={{ width: 25, height: 25, mr:1 }}
-                          variant='square'
-                        />
-                        {x.CAT_NAME}
-                      </MenuItem>  
-                    </div>
-                  );
-                })
-              }
-            </Menu>
-            
-          </div>
-          <div className={classes.menuContainerGreen}>
-            <Button style={{color:'green', fontWeight:'bold'}}>
-              
-              <LoyaltyIcon />
-              
-              Best Sellers
-            </Button>
-          </div> 
-          <div className={classes.menuContainer}>
-            <Button style={{color:'green', fontWeight:'bold'}}>
-              New Arrivals
-            </Button>
-          </div> 
-          <div className={classes.menuContainerGreen}>
-            <Button style={{color:'green', fontWeight:'bold'}}>
-              <LoyaltyIcon />
-              On SALE
-            </Button>
-          </div> 
+              </Menu>
+            </div>
+            <div className={classes.menuContainerGreen}>
+              <Button style={{color:'green', fontWeight:'bold'}}>
+                <LoyaltyIcon />
+                Best Sellers
+              </Button>
+            </div>
+            <div className={classes.menuContainer}>
+              <Button style={{color:'green', fontWeight:'bold'}}>
+                New Arrivals
+              </Button>
+            </div> 
+            <div className={classes.menuContainerGreen}>
+              <Button style={{color:'green', fontWeight:'bold'}}>
+                <LoyaltyIcon />
+                On SALE
+              </Button>
+            </div>
+            {auth?.user?.userRole=="admin" &&
+              <div className={classes.menuContainerGreen}>
+                <Button style={{color:"blue", fontWeight:'bold'}} onClick={()=>{navigate("/admin")}}>
+                  <AdminPanelSettingsIcon />
+                  Admin
+                </Button>
+              </div>
+            }
         </Toolbar>
       </AppBar>
     </div>
