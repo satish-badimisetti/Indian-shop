@@ -3,7 +3,7 @@ const apiConfig = {
 	// BASE_URL: "http://3.79.130.16:3000/",
 	BASE_URL: "https://18.198.91.78:8080/",
 	GET: {
-		GET_PRODUCTS: "/products/getproducts",
+		GET_PRODUCTS: "/products/all",
 		GET_CATEGORIES: "/products/allcategories",
 	},
 	POST: {

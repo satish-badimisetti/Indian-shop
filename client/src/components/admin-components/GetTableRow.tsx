@@ -11,8 +11,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { calculate, roundOff1 } from "./calculations";
 import MultiSelectComponent from "./MultiSelectComponent";
 
-export default function GetTableRow(props:any){
-    
+function GetTableRow(props:any){
     const [rowData,setRowData]=useState<any>(props.tableRowData);
     
     const [copyBeforeEdit,setCopyBeforeEdit]=useState<any>([]);
@@ -246,3 +245,4 @@ export default function GetTableRow(props:any){
         </tr>
     )
 }
+export default React.memo(GetTableRow)

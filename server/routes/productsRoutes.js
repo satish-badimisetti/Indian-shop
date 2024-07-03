@@ -16,14 +16,14 @@ router.get("/all", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-// router.get("/allcategories", async (req, res) => {
-//   try {
-//     const categories = await dbClient.getProductCategories();
-//     res.status(200).json({ status: "success", categories: categories });
-//   } catch (err) {
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
+router.get("/allcategories", async (req, res) => {
+  try {
+    const categories = await dbClient.getProductCategories();
+    res.status(200).json({ status: "success", categories: categories });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 // router.get("/allcategories/:order", async (req, res) => {
 //   try {
 //     const categories = await getProductCategories({ sort: { CAT_ID: req.params.order } });

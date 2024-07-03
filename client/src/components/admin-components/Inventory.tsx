@@ -7,21 +7,23 @@ import GetTableRow from "./GetTableRow";
 import "./Inventory.css";
 import { calculate, roundOff1 } from "./calculations";
 import { Button, IconButton, MenuItem, Select, TextField, Modal, Dialog, DialogContent, DialogActions, DialogContentText, Grid } from "@mui/material";
-
+import TablePagination from '@mui/material/TablePagination';
 import SearchIcon from '@mui/icons-material/Search';
-import AddProduct from "./AddProductComponent/AddProduct";
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
+
+import { useGetProductsAPI, useCategoriesAPI } from "../../api/productsAPI";
 
 interface filterValuesObejct{
     [key:string]:"string"
 }
 
 export default function Inventory(){
-    
-    const productFields=[
-        {field:"PROD_ID",key:true,title:"Prod Id",type:"display", style:{ textAlign:"center"}},
-        {field:"Name",title:"Prod Name",type:"display",toolbar:["search"], style:{width:"300px",textAlign:"left"}},
-        {field:"Cat_Name",title:"Cat Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{textAlign:"left"}},
-        {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{textAlign:"left"}},
+
+    const [productFields,setProductFields]=useState([
+        {field:"PROD_ID",key:true,title:"Prod Id",type:"display", style:{ width:"50px",textAlign:"center"}},
+        {field:"Name",title:"Product Name",type:"display",toolbar:["search"], style:{width:"300px",textAlign:"left"}},
+        {field:"Cat_Name",title:"Category Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{width:"150px",textAlign:"left"}},
+        {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{width:"125px",textAlign:"left"}},
         {field:"NoofUnits",title:"No of Units",type:"text", size:3, style:{textAlign:"right"}},
         {field:"Units",title:"Units",type:"select",selectOptions:["kg","l","Nos"], toolbar:["select"], style:{textAlign:"right"}},
         {field:"NetWeight",title:"Net Weight",type:"display", style:{textAlign:"right"}},
@@ -29,12 +31,11 @@ export default function Inventory(){
         {field:"Price",title:"Price",type:"text", toolbar:["sort"], style:{ textAlign:"right"}},
         {field:"Discount",title:"Disc. %",type:"text", toolbar:["sort"], style:{ textAlign:"center"}},
         {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"display", style:{textAlign:"center"}},
-        {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ textAlign:"left"}},
+        {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ width:"200px",textAlign:"left"}},
         {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]}},
-        {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"display"},
+        {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"display",style:{textAlign:"right"}},
         {field:"Product_Visibility",title:"Visibility",type:"switch",toolbar:["select"],selectOptions:["yes","no"]}
-    ]
-
+    ]);
     const [products,setProducts]=useState([
                     {
                         "PROD_ID":"1234",
@@ -88,13 +89,63 @@ export default function Inventory(){
                     }
                 ]);
     
+    useEffect(
+        ()=>{fetchProducts();},[]
+    )
+    const fetchProducts=async ()=>{
+        const productsReceived=await useGetProductsAPI();
+        const categories=await useCategoriesAPI();
+        const categoriesObject:any={};
+        categories.forEach((category)=>{categoriesObject[category.CAT_ID]=category.CAT_NAME});
+
+        const modifiedProducts=(productsReceived.products).map(
+            (product:any)=>{
+                return {...product,
+                            Discount:Math.round(product.Discount*100),
+                            Cat_Name:categoriesObject[product.CAT_ID],
+                            Labels:product.Labels.split(","),
+                            PricePerUnitQuantity:parseFloat((product.PricePerUnitQuantity)?.toFixed(3)),
+                            NetWeight:parseFloat((product.NetWeight)?.toFixed(3)),
+                            
+                        }
+            }
+        )
+        updateCategoryOptionsInFields(Object.values(categoriesObject));
+        setProducts(modifiedProducts);
+    }
+    const updateCategoryOptionsInFields=(categoriesArray:string[])=>{
+        let newArray:any[]=[];
+        productFields.forEach(field=>{
+            if(field.field==="Cat_Name"){
+                newArray.push({...field,selectOptions:categoriesArray})
+            }
+            else newArray.push(field);
+        })
+        setProductFields(newArray);
+    }
+    
     const [productsToShow,SetProductsToShow]=useState<any>([])//products for display => after filter, sort
     const [filterValues,setFilterValues]=useState<filterValuesObejct>({});//object {"filedName":"fieldValue"}-filters applied
     const [keysChecked,setKeysChecked]=useState<any[]>([]);//the values of the key field for which the rows are checked
     const [sortField,setSortField]=useState<any[]>([]);//the field on which sorting is applied latest
     const [editingRows,setEditingRows]=useState(0);//number of rows in edit state
-    const [productAddState,setProductAddState]=useState(false);
     const [discountUpdateState,setDiscountUpdateState]=useState(false);
+    //table pagination
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const handleChangePage = (
+        event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number,
+      ) => {
+        setPage(newPage);
+      };
+      const handleChangeRowsPerPage = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      ) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+      };
+    //end of pagination
     
     useEffect(
         ()=>{
@@ -233,13 +284,6 @@ export default function Inventory(){
         if(status) setEditingRows((prev)=>prev+1)
         else setEditingRows((prev)=>prev-1)
     }
-
-    const handleAddProductDivOpen=()=>{
-        setProductAddState(true);
-    }
-    const handleAddProductDivClose=()=>{
-        setProductAddState(false);
-    }
     const handleDiscountDivOpen=()=>{
         setDiscountUpdateState(true);
     }
@@ -279,11 +323,22 @@ export default function Inventory(){
                 style={{
                     display:"flex",
                     margin:"10px",
-                    gap:"10px"
+                    gap:"10px",
+                    justifyContent:"center",
+                    alignContent:"center",
                 }}
             >
-                <Button variant="outlined" onClick={handleDiscountDivOpen} disabled={keysChecked.length===0?true:false}>Update Discount</Button>
-
+                <div className="buttonsDiv" style={{flex:1, justifyContent:"center",alignContent:"center"}}>
+                    <Button variant="outlined" onClick={handleDiscountDivOpen} disabled={keysChecked.length===0?true:false}>Update Discount</Button>
+                </div>
+                <TablePagination
+                    component="div"
+                    count={productsToShow.length}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </div>
             <Dialog
                 open={discountUpdateState}
@@ -322,12 +377,12 @@ export default function Inventory(){
                 </DialogActions>  
             </Dialog>
 
-            
             <div className="productsDisplayDiv">
+                
                 <table>
                     <thead>
                         <tr>
-                            <th>
+                            <th style={{width:"100px"}}>
                                 Actions
                             </th>
                             {
@@ -356,6 +411,7 @@ export default function Inventory(){
                                                                                 }
                                                                                 return(
                                                                                     <IconButton
+                                                                                        key={index}
                                                                                         style={{height:"10px", width:"10px", marginLeft:"10px"}}
                                                                                         size="medium"
                                                                                         onClick={()=>onSortClicked(field.field,targetSortOrder)}
@@ -385,7 +441,8 @@ export default function Inventory(){
                                                                                     <TextField
                                                                                         size="small"
                                                                                         variant="outlined"
-                                                                                        sx={{background:"white",marginTop:"5px", borderRadius:"5px",
+
+                                                                                        sx={{background:"white",marginTop:"5px", borderRadius:"5px",width:`${field.style?.width}`,
                                                                                         "& .MuiInputBase-input":{
                                                                                             padding:"4px", fontSize:"0.8em"
                                                                                         }
@@ -408,7 +465,7 @@ export default function Inventory(){
                                                                                     size="small"
                                                                                     value={filterValues[field.field]?filterValues[field.field]:"all"}
                                                                                     onChange={(e)=>{updateFilterValues(field.field,e.target.value)}}
-                                                                                    sx={{background:"white", marginTop:"5px",
+                                                                                    sx={{background:"white", marginTop:"5px",width:`${field.style?.width}`,
                                                                                     "& .MuiSelect-select":{
                                                                                         padding:"2px", fontSize:"0.8em"
                                                                                     }
@@ -439,19 +496,17 @@ export default function Inventory(){
                     </thead>
                     <tbody>
                         {
-                            productsToShow.map(
+                            productsToShow.slice(page*rowsPerPage,page*rowsPerPage+rowsPerPage).map(
                                 (thisProduct:any, index:any)=>{
-                                    return (
-                                        
-                                            <GetTableRow
-                                                tableRowData={thisProduct}
-                                                fieldsData={productFields}
-                                                actions={actions}
-                                                key={index}
-                                                editFreezeFunction={updateEditingRows}
-                                                checkStatus={keysChecked.indexOf(thisProduct[keyFieldName])>-1}
-                                            />
-                                        
+                                    return(
+                                        <GetTableRow
+                                            tableRowData={thisProduct}
+                                            fieldsData={productFields}
+                                            actions={actions}
+                                            key={index}
+                                            editFreezeFunction={updateEditingRows}
+                                            checkStatus={keysChecked.indexOf(thisProduct[keyFieldName])>-1}
+                                        />
                                     )
                                 }
                             )
@@ -459,6 +514,7 @@ export default function Inventory(){
                     </tbody>
                 </table>
             </div>
+            
         </div>
     )
 }
