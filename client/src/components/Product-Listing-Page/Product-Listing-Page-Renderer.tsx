@@ -27,11 +27,13 @@ const ProductListingPageRenderer: React.FC = () => {
   
 
   const {categoryid}=useParams();
+  console.log(categoryid)
   useEffect(()=>{
     updateProducts();
   },[categoryid]);
 
   const updateProducts=async ()=>{
+    console.log(categoryid)
     const productsList=await useGetProductsByCategoryIDAPI(categoryid);
     setProducts(productsList);
     updateProductsToShow(productsList,searchString,sortOption===1?1:-1);

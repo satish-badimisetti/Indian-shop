@@ -14,11 +14,14 @@ import AddProduct from '../components/admin-components/AddProductComponent/AddPr
 import { AuthProvider } from '../components/Authentication-Components/Auth';
 import { RequireAuth } from '../components/Authentication-Components/RequireAuth';
 
+import HeaderRenderer from '../components/Components-Header/Header-Renderer';
+import FooterRenderer from '../components/Components-Footer/Footer-Renderer';
 export default () => {
 
 
     return (
         <AuthProvider>
+            <HeaderRenderer />
             <Routes>
                 {/* <Route path='/' element={<SignInRenderer />} > */}
                     
@@ -31,8 +34,8 @@ export default () => {
                 </Route>
                 <Route path='/' element={<App />}>
                     <Route path='home' element={<HomeComponentRenderer />} />
-                    <Route path='productList/category/:categoryid' element={<ProductListingPageRenderer />} />
                 </Route>
+                <Route path='productList/category/:categoryid' element={<ProductListingPageRenderer />} />
                 {/* <Route path='productDetail' element={<ProductDetailsRenderer
                     name={"Product Name"}
                     description={"Product Description"}
@@ -51,6 +54,7 @@ export default () => {
                 <Route element={<Layout ensureAuthenticated />}>{getRoutesByRole(role)}</Route>
                 <Route path='*' element={<Err404 />} /> */}
             </Routes>
+            <FooterRenderer />
         </AuthProvider>
     )
 }

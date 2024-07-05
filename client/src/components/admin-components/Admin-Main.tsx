@@ -9,15 +9,11 @@ export default function AdminMain(){
     return (
         <>
             <AdminMenubar />
+            <div style={{minHeight:"300px"}}>
+                
                 <Outlet />
-            <Typography
-                variant="body2"
-                color="inherit"
-                align="center"
-                style={{ paddingTop: "16px", height: 38, background: '#438866', textAlign: 'center', color: 'white', fontSize: 14, fontFamily: 'Proxima Nova', fontWeight: '500', wordWrap: 'break-word' }}
-            >
-                &copy; {new Date().getFullYear()} © Indian Shop Milano, All rights reserved.    Developed by INFYAIR SRL
-            </Typography>
+            </div>
+                
         </> 
     )
 }

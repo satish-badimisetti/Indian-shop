@@ -143,7 +143,8 @@ const NavbarRenderer = () => {
   };
   const handleCategoryClick=(categoryId:number)=>{
     handleCloseMenuCategory();
-    navigate(`/app/productList/category/${categoryId}`);
+    console.log(categoryId)
+    navigate(`/productList/category/${categoryId}`);
    // alert(categoryId);
    }
 //end
@@ -173,58 +174,7 @@ const NavbarRenderer = () => {
     <div className={classes.root}>
       
       <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
-          <img src={`${BASE_URL}images/logo.jpeg`} width="88px" height="50px" onClick={backToHome} style={{cursor:"pointer"}}/>
-          <div style={{ width: 151, height: 44, background: '#F2F2F2', alignContent: 'center', position:"relative", left:"-18px", cursor:"pointer"}}
-          onClick={backToHome}
-          >
-            <Typography variant="h1" className={classes.logo}>
-              Indian Shop
-            </Typography>
-          </div>
-          <div className={classes.locationContainer}>
-            <div className={classes.menuItem}>
-              <LocationSearchRenderer />
-            </div>
-            <ArrowDropDown style={{ color: '#FF6600' }} />
-          </div>
-          <Divider
-            orientation="vertical"
-            style={{
-              width: 0,
-              height: 44,
-              marginRight: 20,
-              marginLeft: 20,
-              transformOrigin: '0 0',
-              border: '1px rgba(0, 0, 0, 0.27) solid'
-            }}
-          />
-          <div className={classes.searchContainer}>
-            <InputBase
-              placeholder="Search everything at our store"
-              className={classes.searchInput}
-            />
-            <div className={classes.searchIcon}>
-              <SearchIcon style={{ width: 30, height: 30 }} />
-            </div>
-          </div>
-          {/* <Button to="/login" style={{ marginLeft: "auto" }} className={classes.menuItem}>
-            Login
-          </Button>
-          <Button to="/register" className={classes.menuItem}>
-            Register
-          </Button> */}
-          {/* <IconButton
-            aria-label="cart"
-            aria-controls="simple-menu"
-            aria-haspopup="true"
-            onClick={handleClick}
-            color="inherit"
-          >
-            <ShoppingCartIcon style={{ color: '#0D3823' }} onClick={handleCartClick} />
-            <CartDrawerRenderer isOpen={isCartOpen} onClose={handleCartClose} />
-          </IconButton> */}
-        </Toolbar>
+        
         <Toolbar style={{gap: '30px'}}>
           
             <div className={classes.menuContainer}>
@@ -305,13 +255,7 @@ const NavbarRenderer = () => {
                 </Button>
               </div>
             }
-            {!auth?.user &&
-              <div className={classes.menuContainerGreen}>
-                <Button style={{color:"blue", fontWeight:'bold'}} onClick={()=>{navigate("/login")}}>
-                    Login
-                </Button>
-              </div>
-            }
+            
         </Toolbar>
       </AppBar>
     </div>

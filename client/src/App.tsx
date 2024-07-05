@@ -25,7 +25,6 @@ export default function App() {
       <NavBarRenderer />
         {/* <Outlet /> */}
         <HomeComponentRenderer />
-      <FooterRenderer />
       
       {/* <ProductDetailsRenderer
         name={"Product Name"}

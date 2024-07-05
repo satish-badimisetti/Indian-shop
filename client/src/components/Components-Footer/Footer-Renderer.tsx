@@ -43,14 +43,14 @@ const FooterRenderer: React.FC = () => {
               {/* //grid-1 top right grid */}
               <Grid item xs={8} sm={9} md={8} lg={8} >
                 <Typography style={{paddingBottom:"20px", paddingRight:"15px"}} align="justify" gutterBottom>
-                  Involved in the import and distribution of asian/indian food and grocery items of all types in milan, italia ,first indian groceries shop in milan
+                  Discover Milan's first Indain grocery store! We offer a wide selection of authentic spices, fresh produce and speciality items from Asia. Explore and experience the taste of Asian foods right here in Milan, Italy.
                 </Typography>
                 <Grid item  style={{marginBottom:"10px"}} lg={12}>
                   <Typography variant="body1" style={{ fontWeight: 900 }}>
                     Address:
                   </Typography>
                   <Typography variant="body1">
-                    Via Panfilo Castaldi, 32, 20124 Milano MI, Italy
+                    Via Panfilo Castaldi, 32, 20124 Milan (MI), Italy
                   </Typography>
                 </Grid>
               </Grid>

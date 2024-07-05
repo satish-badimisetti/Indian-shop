@@ -26,11 +26,11 @@ export default function Inventory(){
         {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{width:"125px",textAlign:"left"}},
         {field:"NoofUnits",title:"No of Units",type:"text", size:3, style:{textAlign:"right"}},
         {field:"Units",title:"Units",type:"select",selectOptions:["kg","l","Nos"], toolbar:["select"], style:{textAlign:"right"}},
-        {field:"NetWeight",title:"Net Weight",type:"display", style:{textAlign:"right"}},
-        {field:"Quantity",title:"Qty.",type:"display", style:{textAlign:"right"}},
+        {field:"NetWeight",title:"Net Weight",type:"text", style:{textAlign:"right"}},
+        {field:"Quantity",title:"Qty.",type:"text", style:{textAlign:"right"}},
         {field:"Price",title:"Price",type:"text", toolbar:["sort"], style:{ textAlign:"right"}},
         {field:"Discount",title:"Disc. %",type:"text", toolbar:["sort"], style:{ textAlign:"center"}},
-        {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"display", style:{textAlign:"center"}},
+        {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"text", style:{textAlign:"center"}},
         {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ width:"200px",textAlign:"left"}},
         {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]}},
         {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"display",style:{textAlign:"right"}},
@@ -340,6 +340,7 @@ export default function Inventory(){
                     onPageChange={handleChangePage}
                     rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
+                    rowsPerPageOptions={[]}
                 />
             </div>
             <Dialog
@@ -474,11 +475,11 @@ export default function Inventory(){
                                                                                     }}
                                                                                     disabled={editingRows>0}
                                                                                 >
-                                                                                    <MenuItem value={"all"}>All</MenuItem>
+                                                                                    <MenuItem value={"all"} style={{display:"block", padding:"5px", textAlign:"left"}}>All</MenuItem>
                                                                                     {
                                                                                         field.selectOptions?.map(
                                                                                             (option,index)=>{
-                                                                                                return (<MenuItem value={option} key={index}>{option}</MenuItem>)
+                                                                                                return (<MenuItem value={option} key={index}  style={{display:"block", padding:"5px", textAlign:"left"}}>{option}</MenuItem>)
                                                                                             }
                                                                                         )
                                                                                     }

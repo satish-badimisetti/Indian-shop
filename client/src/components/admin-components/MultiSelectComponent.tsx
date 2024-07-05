@@ -69,7 +69,8 @@ export default function MultiSelectComponent(props:any){
                 optionsArray.map(
                     (option:any,index:any)=>{
                         return(
-                            <MenuItem key={index}>
+                            <MenuItem key={index}  style={{display:"block", padding:"5px", textAlign:"left"}}>
+                                <div style={{display:"flex", flexDirection:"row"}}>
                                 <div style={{flex:1}}>{option}</div>
                                 <input
                                     type="checkbox" 
@@ -77,6 +78,7 @@ export default function MultiSelectComponent(props:any){
                                     checked={valuesArray.indexOf(option)>-1 ? true: false}
                                     onChange={(e)=>{onMultiSelectChange(e)}}
                                 />
+                                </div>
                             </MenuItem>
                         )
                     }
