@@ -21,7 +21,7 @@ const SignInRenderer = () => {
       password: data.get('password'),
     });
     if(auth?.login(data.get("email"),data.get("password"))){
-      navigate("/app/home")
+      navigate("/")
     }
     else{ alert("not loggedin")}
   };

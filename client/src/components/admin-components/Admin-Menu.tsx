@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Divider from '@material-ui/core/Divider/Divider';
 
+
 import { useNavigate } from 'react-router-dom';
 
 import apiConfig from "../../api/client/endpoint";
@@ -41,6 +42,7 @@ const thisStyles = makeStyles((theme: Theme) =>
 );
 
 export default function MenuAppBar() {
+  
   const classes=thisStyles();
   const navigate=useNavigate()
 
@@ -66,7 +68,7 @@ export default function MenuAppBar() {
         </IconButton>
         <div className={classes.taskBar}>
             {/* <img src={`${BASE_URL}images/logo.jpeg`} width="88px" height="50px"/>    */}
-            <Typography >
+            <Typography  onClick={()=>{navigate("/")}} style={{cursor:"pointer"}}>
                 INDIAN SHOP
             </Typography>
             <Typography >

@@ -167,7 +167,7 @@ const NavbarRenderer = () => {
     setAnchorEl(null);
   };
   const backToHome=()=>{
-    navigate(`/app/home`);
+    navigate(`/`);
   }
   return (
     <div className={classes.root}>
@@ -302,6 +302,13 @@ const NavbarRenderer = () => {
                 <Button style={{color:"blue", fontWeight:'bold'}} onClick={()=>{navigate("/admin")}}>
                   <AdminPanelSettingsIcon />
                   Admin
+                </Button>
+              </div>
+            }
+            {!auth?.user &&
+              <div className={classes.menuContainerGreen}>
+                <Button style={{color:"blue", fontWeight:'bold'}} onClick={()=>{navigate("/login")}}>
+                    Login
                 </Button>
               </div>
             }

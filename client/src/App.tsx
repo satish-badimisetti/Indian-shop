@@ -14,6 +14,8 @@ import GroceryItemForm from "./components/Components-Grocery-Item/Grocery-Item-F
 import ProductListingPageRenderer from "./components/Product-Listing-Page/Product-Listing-Page-Renderer";
 import { Link, Outlet } from "react-router-dom";
 
+import HomeComponentRenderer from "./components/Components-Home/Home-Component-Renderer";
+
 export default function App() {
 
 
@@ -21,7 +23,8 @@ export default function App() {
     <>
 
       <NavBarRenderer />
-        <Outlet />
+        {/* <Outlet /> */}
+        <HomeComponentRenderer />
       <FooterRenderer />
       
       {/* <ProductDetailsRenderer

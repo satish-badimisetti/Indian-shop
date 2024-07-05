@@ -20,16 +20,16 @@ export default () => {
     return (
         <AuthProvider>
             <Routes>
-                <Route path='/' element={<SignInRenderer />} >
+                {/* <Route path='/' element={<SignInRenderer />} > */}
                     
-                </Route>
+                {/* </Route> */}
                 <Route path='login' element={<SignInRenderer />} />
                 <Route path='signup' element={<SignUp />} />
                 <Route path="admin" element={<RequireAuth><AdminMain /></RequireAuth>} >
                     <Route path="inventory" element={<Inventory />} />
                     <Route path="addproduct" element={<AddProduct />} />
                 </Route>
-                <Route path='app' element={<RequireAuth><App /></RequireAuth>}>
+                <Route path='/' element={<App />}>
                     <Route path='home' element={<HomeComponentRenderer />} />
                     <Route path='productList/category/:categoryid' element={<ProductListingPageRenderer />} />
                 </Route>
