@@ -268,6 +268,7 @@ export default function Inventory(){
                 filteredProducts=filterArray(filteredProducts,field,filterValuesObject[field]);
             }
         )
+        setPage(0)
         SetProductsToShow(filteredProducts);
     }
     //returns sorted products based on fieldname and sort order
