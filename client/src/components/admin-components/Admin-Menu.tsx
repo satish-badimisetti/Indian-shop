@@ -22,7 +22,7 @@ const thisStyles = makeStyles((theme: Theme) =>
         padding:"5px",
         margin:"auto",
         background:"#f7f5f5",
-        justifyContent:"center",
+        justifyContent:"flexStart",
         alignItems:'center',
         gap:"8px"
     },
@@ -63,33 +63,38 @@ export default function MenuAppBar() {
   
   return (
     <div className={classes.menuDiv}>
+      <div className={classes.taskBar}>
         <IconButton onClick={handleMenuClick}>
-            <MenuIcon />
+          <MenuIcon />
         </IconButton>
-        <div className={classes.taskBar}>
-            {/* <img src={`${BASE_URL}images/logo.jpeg`} width="88px" height="50px"/>    */}
+      </div>
+
+        <Typography  onClick={()=>{navigate("/")}} style={{cursor:"pointer"}}>
+                Welcome Admin!
+        </Typography>
+        
+        {/* <div className={classes.taskBar}>
+            
             <Typography  onClick={()=>{navigate("/")}} style={{cursor:"pointer"}}>
                 INDIAN SHOP
             </Typography>
             <Typography >
                 Admin Activities
             </Typography>
-        </div>
+        </div> */}
               <Menu
                 id="adminMenu"
                 anchorEl={anchorEl}
                 anchorOrigin={{
-                  vertical: 40,
-                  horizontal: 10,
+                  vertical: 30,
+                  horizontal: 5,
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
                 
-                <MenuItem onClick={()=>{handleMenuItemClick("inventory")}} >Inventory</MenuItem>
-                <MenuItem onClick={()=>{handleMenuItemClick("addproduct")}} >Add Product</MenuItem>
-                <Divider />
-                <MenuItem onClick={handleClose} style={{margin:0, paddingBlock:"2px"}}>Logout</MenuItem>
+                <MenuItem onClick={()=>{handleMenuItemClick("inventory")}}  style={{display:"block", padding:"10px", textAlign:"left"}}>Inventory</MenuItem>
+                <MenuItem onClick={()=>{handleMenuItemClick("addproduct")}} style={{display:"block", padding:"10px", textAlign:"left"}} >Add Product</MenuItem>
               </Menu>
     </div>
   );
