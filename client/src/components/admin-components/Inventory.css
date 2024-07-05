@@ -55,12 +55,12 @@ th:nth-child(3), td:nth-child(3) {
 }
 
 th:nth-child(4), td:nth-child(4) {
-    left: 500px; /* Adjust based on the cumulative width of first three columns */
+    left: 498px; /* Adjust based on the cumulative width of first three columns */
     position:sticky;
     z-index:2;
 }
 th:nth-child(5), td:nth-child(5) {
-    left: 675px; /* Adjust based on the cumulative width of first three columns */
+    left: 668px; /* Adjust based on the cumulative width of first three columns */
     position:sticky;
     z-index:2;
     

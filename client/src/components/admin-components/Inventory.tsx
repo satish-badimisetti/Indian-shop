@@ -273,6 +273,8 @@ export default function Inventory(){
     }
     //returns sorted products based on fieldname and sort order
     const sortTheProducts=(array:any[],field:string, sortOrder:number=0)=>{
+        if(typeof(array[0][field])=="number")
+            return array.sort((a,b)=>((a[field] - b[field])*sortOrder));
         return array.sort((a,b)=>(a[field].localeCompare(b[field]))*sortOrder);
     }
     const onSortClicked=(field:string,sortOrder:number)=>{
