@@ -234,7 +234,6 @@ export default function Inventory(){
         return searchType
     }
     const popOutKeyValue=(keyValue:any)=>{
-        console.log(keyValue);
         setKeysChecked(prev=>prev.filter(key=>key!=keyValue))
     }
     //filters given Array of objects based on given field and value and updates keysChecked 
