@@ -25,7 +25,7 @@ const ShopByCategoriesRenderer: React.FC = () => {
   };
   const handleCategoryShop = (category: any) => {
     // console.log(category.category.CAT_ID);
-    navigate(`/app/productList/category/${category.category.CAT_ID}`);
+    navigate(`/productList/category/${category.category.CAT_ID}`);
   };
 
   const handleShowMore = () => {
