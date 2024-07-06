@@ -32,6 +32,7 @@ const GroceryItemCardRenderer = (product: any) => {
     (item.image = product.product.PROD_IMG),
     (item.brand=product.product.Brand),
     (item.units=product.product.Units);
+    (item.NetWeight=product.product.NetWeight);
   }
 
   const classes: any = useStyles();
@@ -56,7 +57,7 @@ const GroceryItemCardRenderer = (product: any) => {
           <div className={classes.discountContainer} style={{display:`${item.discount > 0 ? "" : "none"}`}}>
             <div className={classes.discountText}>{item.discount}% OFF</div>
           </div>
-          <CardContent className={classes.title}>{item.brand} - {item.title} </CardContent>
+          <CardContent className={classes.title}>{item.brand} - {item.title} ({item.NetWeight} {item.units}) </CardContent>
           <CardContent className={classes.price} >
           €&nbsp;{item.pricePerVolume} / {item.units}
           </CardContent>

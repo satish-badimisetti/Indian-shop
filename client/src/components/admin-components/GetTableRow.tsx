@@ -216,7 +216,7 @@ function GetTableRow(props:any){
                             }
                             else if(field.type=="switch"){
                                 return(
-                                    <td key={index} style={field.style}>
+                                    <td key={index} style={field.style} >
                                         <Switch
                                             size="small"
                                             disabled={editState? false:true}

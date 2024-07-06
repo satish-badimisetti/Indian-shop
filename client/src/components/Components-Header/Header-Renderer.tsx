@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, IconButton, InputBase, Divider, Button, Hidden } from '@material-ui/core';
-import { ShoppingCart, ArrowDropDown, Padding } from '@mui/icons-material';
+import { AppBar, Toolbar, Typography, InputBase, Divider, Button, Grid, Container } from '@material-ui/core';
+import { ShoppingCart, ArrowDropDown} from '@mui/icons-material';
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CartDrawerRenderer from "../Components-Cart/Cart-Drawer-Renderer";
-import { useGetAllCategoriesAPI, useCategoriesAPI } from "./../../api/productsAPI";
-import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
+import { useCategoriesAPI } from "./../../api/productsAPI";
+
 import { useNavigate } from 'react-router-dom';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
-import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import Avatar from '@mui/material/Avatar';
-import LoyaltyIcon from '@material-ui/icons/Loyalty';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+
 import apiConfig from "../../api/client/endpoint";
 import { green } from '@material-ui/core/colors';
 import Box from '@material-ui/core';
 import LocationSearchRenderer from '../Components-Nav-Bar/Location-Search-Renderer';
 import { useAuth } from '../Authentication-Components/Auth';
 const BASE_URL = apiConfig.BASE_URL;
-
+import GroceryItemCardRenderer from '../Grocery-Item-Card/Grocery-Item-Card-Renderer';
+import { useGetProductsAPI } from "../../api/productsAPI";
+import NavbarRenderer from '../Components-Nav-Bar/Nav-Bar-Renderer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,42 +117,42 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const HeaderRenderer = () => {
+    //global search of products
+    const [searchString,setSearchString]=useState("");
+    const [products,setProducts]=useState<any[]>([]);
+    const [productsToShow,setProductsToShow]=useState<any[]>([]);
+    useEffect(()=>{
+        fetchProducts();
+      },[]);
+    const fetchProducts=async ()=>{
+        const productsReceived=await useGetProductsAPI();
+        setProducts(productsReceived.products);
+        setProductsToShow(productsReceived.products);
+    }
+    const handleSearchStringChange=(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
+        const newSearchString=e.target.value;
+        setSearchString(newSearchString);
+        updateProductsToShow(newSearchString)
+    }
+    const updateProductsToShow=(searchString:string)=>{
+        setProductsToShow(
+            products.filter((product)=>{
+            return product.Name.toUpperCase().includes(searchString.toLocaleUpperCase());
+            })
+        )
+    }
+    //end
   const navigate=useNavigate();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [categories, setCategories] = useState<any[]>([]);
   const auth=useAuth();
 
-  //category menu dropdown
-  const [categoryMenuAnchor, setCategoryMenuAnchor]=useState<null | HTMLElement>(null);
-  const menuCategoryOpen=Boolean(categoryMenuAnchor);
   
-  const handleClickMenuCategory = (event: React.MouseEvent<HTMLButtonElement>) => {
-
-    setCategoryMenuAnchor(event.currentTarget);
-    
-  };
-  const handleCloseMenuCategory = () => {
-    setCategoryMenuAnchor(null);
-  };
-  const handleCategoryClick=(categoryId:number)=>{
-    handleCloseMenuCategory();
-    console.log(categoryId)
-    navigate(`/productList/category/${categoryId}`);
-   // alert(categoryId);
-   }
-//end
-  useEffect(() => {
-    fetchCategories();
-  }, []);
   const handleCartClose = () => {
     setIsCartOpen(false);
   };
-  const fetchCategories = async () => {
-    const data = await useCategoriesAPI();
-    setCategories(data);
-  };
+ 
   const handleCartClick = () => {
     setIsCartOpen(!isCartOpen);
   };
@@ -178,7 +173,7 @@ const HeaderRenderer = () => {
       
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
-          <img src={`${BASE_URL}images/logo.jpeg`} width="88px" height="50px" onClick={backToHome} style={{cursor:"pointer"}}/>
+          <img src={`${BASE_URL}images/logo.jpeg`} width="84px" height="46px" onClick={backToHome} style={{cursor:"pointer"}}/>
           <div style={{ width: 151, height: 44, background: '#F2F2F2', alignContent: 'center', position:"relative", left:"-18px", cursor:"pointer"}}
           onClick={backToHome}
           >
@@ -207,6 +202,8 @@ const HeaderRenderer = () => {
             <InputBase
               placeholder="Search everything at our store"
               className={classes.searchInput}
+              value={searchString}
+              onChange={(e)=>{handleSearchStringChange(e)}}
             />
             <div className={classes.searchIcon}>
               <SearchIcon style={{ width: 30, height: 30 }} />
@@ -244,6 +241,44 @@ const HeaderRenderer = () => {
           </IconButton> */}
         </Toolbar>
       </AppBar>
+      <NavbarRenderer />
+      {
+        searchString.length>0 &&
+        <>
+            <Divider
+                orientation="horizontal"
+                style={{
+                    marginTop:"10px",
+                    width: '100%',
+                    borderRadius: 2,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                }}
+            />
+            <Typography style={{margin:"10px",color:"green"}}>
+                Total Products Filtered: {productsToShow.length}
+            </Typography>
+            <Container maxWidth="lg" style={{marginTop:"20px",marginBottom:"20px"}}>
+                <Grid container spacing={3}>
+                    {productsToShow.map((product,index) => (
+                    <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                        <GroceryItemCardRenderer product={product}/>
+                    </Grid>
+                    ))}
+                </Grid>
+            </Container>
+            <Divider
+                orientation="horizontal"
+                style={{
+                    marginTop:"10px",
+                    width: '100%',
+                    borderRadius: 2,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                }}
+            />
+        </>
+      }
     </div>
   );
 };

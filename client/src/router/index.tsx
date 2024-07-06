@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Route, Router, Routes } from 'react-router-dom';
 import { SignUp, SignInRenderer } from "../components/Components-User-Account"
 import App from '../App';
@@ -16,16 +16,15 @@ import { RequireAuth } from '../components/Authentication-Components/RequireAuth
 
 import HeaderRenderer from '../components/Components-Header/Header-Renderer';
 import FooterRenderer from '../components/Components-Footer/Footer-Renderer';
-export default () => {
 
+export default () => {
+    
 
     return (
         <AuthProvider>
             <HeaderRenderer />
+            
             <Routes>
-                {/* <Route path='/' element={<SignInRenderer />} > */}
-                    
-                {/* </Route> */}
                 <Route path='login' element={<SignInRenderer />} />
                 <Route path='signup' element={<SignUp />} />
                 <Route path="admin" element={<RequireAuth><AdminMain /></RequireAuth>} >

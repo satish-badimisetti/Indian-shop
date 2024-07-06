@@ -93,6 +93,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontSize: 12,
       fontFamily: 'Proxima Nova',
       fontWeight: 400,
+      paddingLeft:"0px",
     },
     priceContainer: {
       textAlign: "center",
@@ -101,6 +102,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(2),
       top: 292,
       position: 'relative',
+      paddingLeft:"0px",
     },
     priceValue: {
       display: "flex",

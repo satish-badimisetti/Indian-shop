@@ -2,7 +2,7 @@ import React from "react";
 import ShopByCategoriesRenderer from "./components/Shop-By-Category/Shop-By-Categories-Renderer";
 import ShopByBrandRenderer from "./components/Shop-By-Brand/Shop-By-Brand-Renderer";
 import GroceryItemCardRenderer from "./components/Grocery-Item-Card/Grocery-Item-Card-Renderer";
-import NavBarRenderer from "./components/Components-Nav-Bar/Nav-Bar-Renderer";
+
 import FooterRenderer from "./components/Components-Footer/Footer-Renderer";
 import ProductDetailsRenderer from "./components/Components-Product-Details/Product-Details-Renderer";
 import GoogleReviewsRenderer from "./components/Components-Google-Reviews/Google-Reviews-Renderer";
@@ -22,9 +22,8 @@ export default function App() {
   return (
     <>
 
-      <NavBarRenderer />
-        {/* <Outlet /> */}
-        <HomeComponentRenderer />
+      
+      <HomeComponentRenderer />
       
       {/* <ProductDetailsRenderer
         name={"Product Name"}
@@ -38,7 +37,6 @@ export default function App() {
       /> */}
       {/* <GroceryItemForm /> */}
       {/* <ProductListingPageRenderer /> */}
-
     </>
   )
 }

@@ -22,7 +22,7 @@ const thisStyles = makeStyles((theme: Theme) =>
         padding:"5px",
         margin:"auto",
         background:"#f7f5f5",
-        justifyContent:"flexStart",
+        justifyContent:"center",
         alignItems:'center',
         gap:"8px"
     },
@@ -69,7 +69,7 @@ export default function MenuAppBar() {
         </IconButton>
       </div>
 
-        <Typography  onClick={()=>{navigate("/")}} style={{cursor:"pointer"}}>
+        <Typography  style={{cursor:"pointer"}}>
                 Welcome Admin!
         </Typography>
         
