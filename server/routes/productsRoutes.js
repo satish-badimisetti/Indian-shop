@@ -1,4 +1,5 @@
 const express = require("express");
+// const multer=require("multer");
 // const { getBestSellers, getProductCategories, getProducts } = require("../DB/ProductsModule/productsDB.js");
 // const { processAddProduct, processUpdate, processDelete, processGetProductsRequest, processGetCategoriesRequest } = require("../DB/ProductsModule/productsMiddleware.js");
 const dbClient = require("../client/dbClient");
@@ -119,7 +120,15 @@ router.post("/getProductsByCategoryId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+router.post("/addProduct", async (req, res) => {
+  try {
+    const productObject = req.body.product;
+    const newProductId = await dbClient.addProduct(productObject);
+    res.status(200).json({ status: "success", newProductId: newProductId });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 router.post("/getProductsByFilter", async (req, res) => {
   try {
     const filter = req.body.filter;

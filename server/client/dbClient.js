@@ -36,7 +36,7 @@ async function getAllProducts() {
     const col = db.collection("Products");
 
     const products = await col.find({}).toArray();
-    console.log("all products " + JSON.stringify(products))
+    // console.log("all products " + JSON.stringify(products))
     return products;
   } catch (err) {
     console.error("Error fetching products: ", err);
@@ -55,13 +55,68 @@ async function getProductCategories() {
     const col = db.collection("Categories");
 
     const products = await col.find({}).toArray();
-    console.log("all Categories " + JSON.stringify(products))
+    // console.log("all Categories " + JSON.stringify(products))
     return products;
   } catch (err) {
     console.error("Error fetching Categories: ", err);
     throw err;
   }
 }
+
+async function addProduct(productObject){
+  const client=await createDocDBConnection();
+  try{
+    const db=client.db(dbName);
+    const collection=db.collection("Products");
+    const queryResult=await collection.aggregate([ 
+      { $sort: { "PROD_ID": -1 } },
+      {$project:{"PROD_ID":1}},
+      {$limit: 1}
+    ]).toArray();
+    const newProdId=queryResult[0].PROD_ID + 1;
+    collection.insertOne({...productObject,"PROD_ID":newProdId});
+    return newProdId;
+  }catch(err){
+    throw err;
+  }
+}
+async function updateProduct(productObject){
+  const targetProductId=productObject.PROD_ID;
+  const client=await createDocDBConnection();
+  try{
+    const db=client.db(dbName);
+    const collection=db.collection("Products");
+    
+    collection.updateOne( { PROD_ID: targetProductId }, { $set: productObject } ) 
+
+  }catch(err){
+    throw err;
+  }
+}
+
+//One time requirement for updaing the cateogry name of the products
+async function updateCategoryNames(){
+  const client=await createDocDBConnection();
+  const db=client.db(dbName);
+  const collection=db.collection("Products");
+
+  const categoriesArray=await getProductCategories();
+  const products=await getAllProducts();//CAT_ID
+
+  products.forEach(target => {
+    categoriesArray.some((category)=>{
+      if(category.CAT_ID==target.CAT_ID){
+        // console.log({...target,["CAT_NAME"]:category.CAT_NAME});
+        collection.updateOne( { PROD_ID: target.PROD_ID,CAT_ID:target.CAT_ID }, { $set: { "CAT_NAME":category.CAT_NAME } } ) 
+        return true;
+      }
+    })
+  });
+  
+  // console.log(products[0]);
+
+}
+// updateCategoryNames();
 
 /**
  *
@@ -117,10 +172,13 @@ async function getBrands() {
     throw err;
   }
 }
+
 module.exports = {
   getAllProducts,
   getProductCategories,
   getProductsByCategoryId,
   getProductsByFilter,
-  getBrands
+  getBrands,
+  addProduct,
+  updateProduct
 };

@@ -22,10 +22,10 @@ export default function Inventory(){
     const [productFields,setProductFields]=useState([
         {field:"PROD_ID",key:true,title:"Prod Id",type:"display", style:{ width:"50px",textAlign:"center"}},
         {field:"Name",title:"Product Name",type:"display",toolbar:["search"], style:{width:"300px",textAlign:"left"}},
-        {field:"Cat_Name",title:"Category Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{width:"150px",textAlign:"left"}},
+        {field:"CAT_NAME",title:"Category Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{width:"150px",textAlign:"left"}},
         {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{width:"125px",textAlign:"left"}},
         {field:"NoofUnits",title:"No of Units",type:"text", size:3, style:{textAlign:"right"}},
-        {field:"Units",title:"Units",type:"select",selectOptions:["kg","l","Nos"], toolbar:["select"], style:{textAlign:"right"}},
+        {field:"Units",title:"Units",type:"display", style:{textAlign:"right"}},
         {field:"NetWeight",title:"Net Weight",type:"text", style:{textAlign:"right"}},
         {field:"Quantity",title:"Qty.",type:"text", style:{textAlign:"right"}},
         {field:"Price",title:"Price",type:"text", toolbar:["sort"], style:{ textAlign:"right"}},
@@ -34,7 +34,7 @@ export default function Inventory(){
         {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ width:"200px",textAlign:"left"}},
         {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]}},
         {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"display",style:{textAlign:"right"}},
-        {field:"Product_Visibility",title:"Visibility",type:"switch",toolbar:["select"],selectOptions:["yes","no"]}
+        {field:"Product_Visibility",title:"Visibility",type:"switch",toolbar:["select"],selectOptions:["Yes","No"]}
     ]);
     const [products,setProducts]=useState([
                     {
@@ -94,30 +94,43 @@ export default function Inventory(){
     )
     const fetchProducts=async ()=>{
         const productsReceived=await useGetProductsAPI();
-        const categories=await useCategoriesAPI();
-        const categoriesObject:any={};
-        categories.forEach((category)=>{categoriesObject[category.CAT_ID]=category.CAT_NAME});
+
+        let categoriesArray:any=[];
+        let brandsArray:any=[];
 
         const modifiedProducts=(productsReceived.products).map(
             (product:any)=>{
+                const cat=product.CAT_NAME;
+                const brand=product.Brand;
+                console.log(brand);
+                if(cat){
+                    if(categoriesArray.indexOf(cat)<0){
+                        categoriesArray.push(cat);
+                    }
+                }
+                if(brandsArray.indexOf(brand)<0){
+                    brandsArray.push(brand);
+                }
                 return {...product,
                             Discount:Math.round(product.Discount*100),
-                            Cat_Name:categoriesObject[product.CAT_ID],
-                            Labels:product.Labels.split(","),
+                            Labels:product.Labels?.split(","),
                             PricePerUnitQuantity:parseFloat((product.PricePerUnitQuantity)?.toFixed(3)),
                             NetWeight:parseFloat((product.NetWeight)?.toFixed(3)),
-                            
+                            Product_Visibility:"No"
                         }
             }
         )
-        updateCategoryOptionsInFields(Object.values(categoriesObject));
+        updateOptionsInFields(categoriesArray,brandsArray);
         setProducts(modifiedProducts);
     }
-    const updateCategoryOptionsInFields=(categoriesArray:string[])=>{
+    const updateOptionsInFields=(categoriesArray:string[],brandsArray:string[])=>{
         let newArray:any[]=[];
         productFields.forEach(field=>{
-            if(field.field==="Cat_Name"){
+            if(field.field==="CAT_NAME"){
                 newArray.push({...field,selectOptions:categoriesArray})
+            }
+            else if(field.field==="Brand"){
+                newArray.push({...field,selectOptions:brandsArray})
             }
             else newArray.push(field);
         })
