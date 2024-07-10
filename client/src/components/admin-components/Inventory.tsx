@@ -9,9 +9,8 @@ import { calculate, roundOff1 } from "./calculations";
 import { Button, IconButton, MenuItem, Select, TextField, Modal, Dialog, DialogContent, DialogActions, DialogContentText, Grid } from "@mui/material";
 import TablePagination from '@mui/material/TablePagination';
 import SearchIcon from '@mui/icons-material/Search';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 
-import { useGetProductsAPI, useCategoriesAPI } from "../../api/productsAPI";
+import { useGetProductsAPI, useUpdateOneProductAPI, useDeleteOneProductAPI, useUpdateMultipleProductsAPI } from "../../api/productsAPI";
 
 interface filterValuesObejct{
     [key:string]:"string"
@@ -20,21 +19,22 @@ interface filterValuesObejct{
 export default function Inventory(){
 
     const [productFields,setProductFields]=useState([
-        {field:"PROD_ID",key:true,title:"Prod Id",type:"display", style:{ width:"50px",textAlign:"center"}},
-        {field:"Name",title:"Product Name",type:"display",toolbar:["search"], style:{width:"300px",textAlign:"left"}},
-        {field:"CAT_NAME",title:"Category Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{width:"150px",textAlign:"left"}},
-        {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{width:"125px",textAlign:"left"}},
-        {field:"NoofUnits",title:"No of Units",type:"text", size:3, style:{textAlign:"right"}},
-        {field:"Units",title:"Units",type:"display", style:{textAlign:"right"}},
-        {field:"NetWeight",title:"Net Weight",type:"text", style:{textAlign:"right"}},
-        {field:"Quantity",title:"Qty.",type:"text", style:{textAlign:"right"}},
-        {field:"Price",title:"Price",type:"text", toolbar:["sort"], style:{ textAlign:"right"}},
-        {field:"Discount",title:"Disc. %",type:"text", toolbar:["sort"], style:{ textAlign:"center"}},
-        {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"text", style:{textAlign:"center"}},
-        {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ width:"200px",textAlign:"left"}},
-        {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]}},
-        {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"display",style:{textAlign:"right"}},
-        {field:"Product_Visibility",title:"Visibility",type:"switch",toolbar:["select"],selectOptions:["Yes","No"]}
+        {field:"_id",key:true,title:"Doc Id",type:"display", style:{ width:"80px",textAlign:"center"},columnVisible:false},
+        {field:"PROD_ID",title:"Prod Id",type:"text",toolbar:["search"], style:{ width:"80px",textAlign:"center"},columnVisible:true},
+        {field:"Name",title:"Product Name",type:"display",toolbar:["search"], style:{width:"300px",textAlign:"left"},columnVisible:true},
+        {field:"CAT_NAME",title:"Category Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{width:"150px",textAlign:"left"},columnVisible:true},
+        {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{width:"125px",textAlign:"left"},columnVisible:true},
+        {field:"NoofUnits",title:"No of Units",type:"text", size:3, style:{textAlign:"right"},columnVisible:true},
+        {field:"Units",title:"Units",type:"display", style:{textAlign:"right"},columnVisible:true},
+        {field:"NetWeight",title:"Net Weight",type:"text", style:{textAlign:"right"},columnVisible:true},
+        {field:"Quantity",title:"Qty.",type:"text", style:{textAlign:"right"},columnVisible:true},
+        {field:"Price",title:"Price",type:"text", toolbar:["sort"], style:{ textAlign:"right"},columnVisible:true},
+        {field:"Discount",title:"Disc. %",type:"text", toolbar:["sort"], style:{ textAlign:"center"},columnVisible:true},
+        {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"text", style:{textAlign:"center"},columnVisible:true},
+        {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ width:"200px",textAlign:"left"},columnVisible:true},
+        {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]},columnVisible:true},
+        {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"calc",calc:{"devide":["DiscountedPrice","NetWeight"]},style:{textAlign:"right"},columnVisible:true},
+        {field:"ProductVisibility",title:"Visibility",type:"switch",toolbar:["select"],selectOptions:["Yes","No"],columnVisible:true}
     ]);
     const [products,setProducts]=useState([
                     {
@@ -52,7 +52,7 @@ export default function Inventory(){
                         "Labels":["Best Sellers", "On Sale"],
                         "DiscountedPrice":"3.393",
                         "PricePerUnitQuantity":"6.058",
-                        "Product_Visibility":"yes"
+                        "ProductVisibility":"yes"
                     },
                     {
                         "PROD_ID":"1235",
@@ -69,7 +69,7 @@ export default function Inventory(){
                         "Labels":["Best Sellers"],
                         "DiscountedPrice":"3.393",
                         "PricePerUnitQuantity":"6.058",
-                        "Product_Visibility":"no"
+                        "ProductVisibility":"no"
                     },{
                         "PROD_ID":"1236",
                         "Cat_Name":"Milk",
@@ -85,7 +85,7 @@ export default function Inventory(){
                         "Labels":["Best Sellers"],
                         "DiscountedPrice":"3.393",
                         "PricePerUnitQuantity":"6.058",
-                        "Product_Visibility":"no"
+                        "ProductVisibility":"no"
                     }
                 ]);
     
@@ -97,33 +97,37 @@ export default function Inventory(){
 
         let categoriesArray:any=[];
         let brandsArray:any=[];
-
+        let labelsArray:any=[];
         const modifiedProducts=(productsReceived.products).map(
             (product:any)=>{
                 const cat=product.CAT_NAME;
                 const brand=product.Brand;
-                console.log(brand);
-                if(cat){
-                    if(categoriesArray.indexOf(cat)<0){
-                        categoriesArray.push(cat);
-                    }
+                const labels=product.Labels?.split(", ");
+                if(categoriesArray.indexOf(cat)<0){
+                    categoriesArray.push(cat);
                 }
                 if(brandsArray.indexOf(brand)<0){
                     brandsArray.push(brand);
                 }
+                labels.map(
+                    (label:any)=>{
+                        if(labelsArray.indexOf(label)<0){
+                            labelsArray.push(label);
+                        }
+                    }
+                )
                 return {...product,
                             Discount:Math.round(product.Discount*100),
-                            Labels:product.Labels?.split(","),
+                            Labels:labels,
                             PricePerUnitQuantity:parseFloat((product.PricePerUnitQuantity)?.toFixed(3)),
                             NetWeight:parseFloat((product.NetWeight)?.toFixed(3)),
-                            Product_Visibility:"No"
                         }
             }
         )
-        updateOptionsInFields(categoriesArray,brandsArray);
+        updateOptionsInFields(categoriesArray,brandsArray,labelsArray);
         setProducts(modifiedProducts);
     }
-    const updateOptionsInFields=(categoriesArray:string[],brandsArray:string[])=>{
+    const updateOptionsInFields=(categoriesArray:string[],brandsArray:string[],labelsArray:string[])=>{
         let newArray:any[]=[];
         productFields.forEach(field=>{
             if(field.field==="CAT_NAME"){
@@ -131,6 +135,9 @@ export default function Inventory(){
             }
             else if(field.field==="Brand"){
                 newArray.push({...field,selectOptions:brandsArray})
+            }
+            else if(field.field==="Labels"){
+                newArray.push({...field,selectOptions:labelsArray})
             }
             else newArray.push(field);
         })
@@ -143,6 +150,10 @@ export default function Inventory(){
     const [sortField,setSortField]=useState<any[]>([]);//the field on which sorting is applied latest
     const [editingRows,setEditingRows]=useState(0);//number of rows in edit state
     const [discountUpdateState,setDiscountUpdateState]=useState(false);
+    //messagebox
+    const [message,setMessage]=useState<string | null>(null);
+    const [messageBoxColor,setMessageBoxColor]=useState("#B2FF59");
+    //end
     //table pagination
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -151,6 +162,7 @@ export default function Inventory(){
         newPage: number,
       ) => {
         setPage(newPage);
+        setKeysChecked([]);
       };
       const handleChangeRowsPerPage = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -192,7 +204,7 @@ export default function Inventory(){
         ))
     }
     //editFunction to receive rowdata from getRowTable
-    const editFunction=(rowData:any)=>{
+    const editFunction=async (rowData:any)=>{
         productFields.map(
             (field)=>{
                 if(field.type=="calc"){
@@ -201,14 +213,37 @@ export default function Inventory(){
                 }
             }
         )
-        console.log("save Request for")
-        console.log(rowData);
-        updateProducts(rowData);
+        const copyOfRowData={...rowData};
+        delete copyOfRowData._id;
+        copyOfRowData.Labels=rowData.Labels.join(", ");
+        copyOfRowData.Discount=rowData.Discount/100;
+        const status=await useUpdateOneProductAPI(rowData._id,copyOfRowData);
+        if(status) {
+            showMessage(`Successfulyy Updated the Product: ${rowData.Name}`);
+        }
+        else {
+            showMessage(`Unable to update the Product: ${rowData.Name}. Try after some time or contact admin`,2000,"error");
+        }
+        fetchProducts();
+    }
+    const showMessage=(message:string,duration=2000,style:string="success")=>{
+        if(style=="error") setMessageBoxColor("#FB8C00");
+        setMessage(message);
+        setTimeout(()=>{
+            setMessage(null);
+            setMessageBoxColor("#B2FF59");
+        },duration)
     }
     //deleteFunction to receive rowdata from getRowTable
-    const deleteFunction=(rowData:any)=>{
-        console.log("delete request for")
-        console.log(rowData)
+    const deleteFunction=async (rowData:any)=>{
+        const status=await useDeleteOneProductAPI(rowData._id);
+        if(status) {
+            showMessage(`Successfulyy Deleted the Product: ${rowData.Name}`);
+        }
+        else {
+            showMessage(`Unable to Delete the Product: ${rowData.Name}. Try after some time or contact admin`,2000,"error");
+        }
+        fetchProducts();
     }
     //checkFunction to received rowdata from getRowTable
     const checkFunction=(keyValue:any,status:"checked" | "not-checked")=>{
@@ -256,7 +291,7 @@ export default function Inventory(){
             return array.filter(
                 (object:any)=>{
                     // return object[field].indexOf(value) !=-1
-                    const result=object[field].toUpperCase().includes(value.toLocaleUpperCase());
+                    const result=object[field].toString().toUpperCase().includes(value.toLocaleUpperCase());
                     if(!result) popOutKeyValue(object[keyFieldName]);
                     return result;
                 }
@@ -305,27 +340,39 @@ export default function Inventory(){
     const handleDiscountDivClose=()=>{
         setDiscountUpdateState(false);
     }
-    const updateDiscount=(discount:number)=>{
+    const updateDiscount=async (discount:number)=>{
         const keyFieldName=getKeyFieldName();
-        const newProductsArray=
-            products.map((productObject:any)=>{
-                if(keysChecked.indexOf(productObject[keyFieldName])>-1){
+        let finalArray:any=[];
+        productsToShow.slice((page*rowsPerPage),(page*rowsPerPage)+rowsPerPage).map(
+            (productObject:any)=>{
+                const keyId=productObject[keyFieldName];
+                
+                if(keysChecked.indexOf(keyId)>-1){
                     let newProductObject={...productObject,"Discount":discount}
-                    productFields.map(
-                        (field:any)=>{
-                            if(field.type=="calc"){
-                                const expression=field.calc;
-                                newProductObject[field.field]=roundOff1(calculate(expression,newProductObject))
-                            }
+                    const productModificationObject:any={"Discount":discount/100};
+
+                    productFields.map((fieldObject:any)=>{
+                        if(fieldObject.type=="calc"){
+                            const expression=fieldObject.calc;
+                            const calculatedValue=roundOff1(calculate(expression,newProductObject));
+                            newProductObject[fieldObject.field]=calculatedValue;
+                            productModificationObject[fieldObject.field]=calculatedValue;
                         }
-                    )
-                    return newProductObject;
+                    })
+                    finalArray.push({productDocumentId:keyId,productObjectModification:productModificationObject})
                 }
-                else return productObject;
-            });
-        console.log(newProductsArray);
-        setProducts(newProductsArray);
-        // updateProductsToShow(filterValues,newProductsArray);
+            }
+        )
+        const response=await useUpdateMultipleProductsAPI(finalArray);
+        if(response.length==finalArray.length){
+            showMessage("All requests are Processed!")
+        }
+        else{
+            const modifiedObjects=response.join(", ");
+            showMessage(`Able to modify : ${modifiedObjects}`);
+        }
+        fetchProducts();
+        
     }
     const actions:{action:string,func:Function}[]=[
         {action:"edit",func:editFunction},
@@ -392,9 +439,22 @@ export default function Inventory(){
                     <Button type="submit">Update</Button>
                 </DialogActions>  
             </Dialog>
-
+            {
+                message &&
+                <div
+                    style={{
+                        textAlign:"center",
+                        fontSize:"1.2em",
+                        marginTop:"10px",
+                        marginBottom:"10px",
+                        background:"#C6FF00",
+                        padding:"10px"
+                    }}
+                >
+                    {message}
+                </div>
+            }
             <div className="productsDisplayDiv">
-                
                 <table>
                     <thead>
                         <tr>
@@ -404,6 +464,9 @@ export default function Inventory(){
                             {
                                 productFields.map(
                                     (field,index)=> {
+                                        if(!field.columnVisible){
+                                            return <></>
+                                        }
                                         return (
                                                 <th key={index}>
                                                     <div style={{display:"flex",flexDirection:"column", alignItems:"center", justifyContent:"flex-start"}}>

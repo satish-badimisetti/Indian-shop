@@ -43,33 +43,29 @@ th:nth-child(1), td:nth-child(1) {
 }
 
 th:nth-child(2), td:nth-child(2) {
-    left: 105px; 
+    left: 102px; 
     position:sticky;
     z-index:2;
 }
 
 th:nth-child(3), td:nth-child(3) {
-    left: 173px; /* Adjust based on the cumulative width of first two columns */
+    left: 208px; /* Adjust based on the cumulative width of first two columns */
     position:sticky;
     z-index:2;
 }
 
 th:nth-child(4), td:nth-child(4) {
-    left: 498px; /* Adjust based on the cumulative width of first three columns */
+    left: 534px; /* Adjust based on the cumulative width of first three columns */
     position:sticky;
     z-index:2;
 }
 th:nth-child(5), td:nth-child(5) {
-    left: 668px; /* Adjust based on the cumulative width of first three columns */
+    left: 704px; /* Adjust based on the cumulative width of first three columns */
     position:sticky;
     z-index:2;
     
 }
-th:nth-child(1), td:nth-child(1) {
-    position:sticky;
-    z-index:2;
-    left: 0;
-}
+
 
 td:nth-child(1), td:nth-child(2),td:nth-child(3), td:nth-child(4),td:nth-child(5) {
     

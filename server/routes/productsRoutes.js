@@ -8,7 +8,6 @@ const router = express.Router();
 
 //Get All products
 router.get("/all", async (req, res) => {
-  console.log("get request")
   try {
     const products = await dbClient.getAllProducts();
     res.status(200).json({ status: "success", products: products });
@@ -125,6 +124,40 @@ router.post("/addProduct", async (req, res) => {
     const productObject = req.body.product;
     const newProductId = await dbClient.addProduct(productObject);
     res.status(200).json({ status: "success", newProductId: newProductId });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post("/updateProduct", async (req, res) => {
+  try {
+    const productObject = req.body.product;
+    const productDocumentId=req.body.productDocumentId;
+    const modifiedProductCount = await dbClient.updateProduct(productDocumentId,productObject);
+    res.status(200).json({ status: "success", count: modifiedProductCount });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post("/updateMultipleProducts", async (req, res) => {
+  try {
+    const modificationArray=req.body.modificationArray;
+    let modifiedProductDocumentIds=[]
+    for(const modificationObject of modificationArray){
+      const productObject = modificationObject.productObjectModification;
+      const productDocumentId=modificationObject.productDocumentId;
+      const modifiedProductCount = await dbClient.updateProduct(productDocumentId,productObject);
+      if(modifiedProductCount>0) modifiedProductDocumentIds.push(productDocumentId)
+    }
+    res.status(200).json({ status: "success", modifiedProductDocumentIds: modifiedProductDocumentIds });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post("/deleteProduct", async (req, res) => {
+  try {
+    const productObject = req.body.productDocumentId;
+    const deleteProductCount = await dbClient.updateProduct(productObject);
+    res.status(200).json({ status: "success", count: deleteProductCount });
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
   }

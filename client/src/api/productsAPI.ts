@@ -149,3 +149,57 @@ export const  useGetBrandsAPI = async () => {
 		return [];
 	}
 };
+export const useUpdateOneProductAPI=async (productDocumentId:any,productObject:any)=>{
+  const url = apiConfig.POST.UPDATEONEPRODUCT;
+
+  return api.post(url, { productDocumentId:productDocumentId,product: productObject }).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return false;
+    }
+  );
+}
+export const useUpdateMultipleProductsAPI=async (arrayOfModificationObjects:any)=>{
+  const url = apiConfig.POST.UPDATEMULTIPLEPRODUCTS;
+
+  return api.post(url, { modificationArray:arrayOfModificationObjects }).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return response.data.modifiedProductDocumentIds;
+      } else {
+        return [];
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return [];
+    }
+  );
+}
+export const useDeleteOneProductAPI=async (productDocumentId:any)=>{
+  const url = apiConfig.POST.UPDATEONEPRODUCT;
+
+  return api.post(url, { productDocumentId: productDocumentId }).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return false;
+    }
+  );
+}

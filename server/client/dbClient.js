@@ -80,20 +80,49 @@ async function addProduct(productObject){
     throw err;
   }
 }
-async function updateProduct(productObject){
-  const targetProductId=productObject.PROD_ID;
+//update Product: productObject=> object of filed:value ->to be modified, should not contain _id; returns modifiedCount
+async function updateProduct(productDocumentId,productObject){
+  const productObjectId=new ObjectId(productDocumentId);
   const client=await createDocDBConnection();
   try{
     const db=client.db(dbName);
     const collection=db.collection("Products");
     
-    collection.updateOne( { PROD_ID: targetProductId }, { $set: productObject } ) 
+    const result=await collection.updateOne( { _id: productObjectId }, { $set: productObject } );
+    return result.modifiedCount;
+
+  }catch(err){
+    console.log(err)
+    throw err;
+  }
+}
+async function deleteProduct(productDocumentId){
+  const productObjectId=new ObjectId(productDocumentId)
+  const client=await createDocDBConnection();
+  try{
+    const db=client.db(dbName);
+    const collection=db.collection("Products");
+    
+    const result=await collection.deleteOne( { _id: productObjectId });
+    return result.deletedCount;
 
   }catch(err){
     throw err;
   }
 }
+//One time requirement for updaing the productvisibility of the products
+async function updateProductVisibility(){
+  const client=await createDocDBConnection();
+  const db=client.db(dbName);
+  const collection=db.collection("Products");
 
+  const products=await getAllProducts();
+  
+  products.forEach(async (target) => {
+        const result1=await collection.updateOne( { PROD_ID: target.PROD_ID,CAT_ID:target.CAT_ID }, { $set: { "ProductVisibility":"Yes" } } ) 
+  });
+}
+// updateProductVisibility();
 //One time requirement for updaing the cateogry name of the products
 async function updateCategoryNames(){
   const client=await createDocDBConnection();
@@ -130,7 +159,6 @@ async function getProductsByCategoryId(categoryId) {
     const col = db.collection("Products");
 
     const products = await col.find({ CAT_ID: parseInt(categoryId) }).toArray();
-    console.log("all getProductsByCategoryId " + JSON.stringify(products))
     return products;
   } catch (err) {
     console.error("Error fetching getProductsByCategoryId: ", err);
@@ -150,7 +178,7 @@ async function getProductsByFilter(filter) {
     const col = db.collection("Products");
 
     const products = await col.find({ Labels: filter}).toArray();
-    console.log("all getProductsByFilter " + JSON.stringify(products))
+    
     return products;
   } catch (err) {
     console.error("Error fetching getProductsByFilter: ", err);
@@ -165,7 +193,7 @@ async function getBrands() {
     const col = db.collection("Brands");
 
     const products = await col.find({}).toArray();
-    console.log("all Brands " + JSON.stringify(products))
+    
     return products;
   } catch (err) {
     console.error("Error fetching Brands: ", err);
@@ -180,5 +208,6 @@ module.exports = {
   getProductsByFilter,
   getBrands,
   addProduct,
-  updateProduct
+  updateProduct,
+  deleteProduct
 };

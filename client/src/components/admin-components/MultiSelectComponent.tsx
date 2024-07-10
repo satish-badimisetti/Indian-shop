@@ -15,7 +15,7 @@ export default function MultiSelectComponent(props:any){
     useEffect(
         ()=>{
             setValuesArray(props.values);
-        },[]
+        },[props]
     )
 
     const [open, setOpen] = useState(false);

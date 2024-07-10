@@ -77,7 +77,7 @@ function GetTableRow(props:any){
     }
     
     return(
-        <tr style={{background:`${props.checkStatus?"rgba(250,230,200,0.5)":"white"}`}}>
+        <tr style={{background:`${props.checkStatus?"rgba(1,3,86,0.1)":"white"}`}}>
         {
             Object.keys(rowData).length>0 && (
                 <>
@@ -150,6 +150,9 @@ function GetTableRow(props:any){
                 {
                     fields.map(
                         (field:any,index:any)=>{
+                            if(!field.columnVisible){
+                                return<></>
+                            }
                             if(field.type=="display"){
                                 return (
                                     <td key={index} style={field.style}>{rowData[field.field]}</td>
@@ -219,10 +222,12 @@ function GetTableRow(props:any){
                                     <td key={index} style={field.style} >
                                         <Switch
                                             size="small"
+                                            edge="start"
                                             disabled={editState? false:true}
                                             name={`${field.field}`}
                                             checked={rowData[field.field]=="Yes"}
                                             onChange={(e)=>onChangeSwitchInputField(e)}
+                                            style={{padding:"0px"}}
                                         />
                                     </td>
                                 )
