@@ -6,7 +6,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Divider from '@material-ui/core/Divider/Divider';
-
+import { Button } from '@mui/material';
+import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -33,6 +35,7 @@ const thisStyles = makeStyles((theme: Theme) =>
         justifyContent:"flex-start",
         alignItems:"center",
         gap:"8px",
+        paddingLeft:"10px"
         
     },
     menuIcon:{
@@ -64,12 +67,26 @@ export default function MenuAppBar() {
   return (
     <div className={classes.menuDiv}>
       <div className={classes.taskBar}>
-        <IconButton onClick={handleMenuClick}>
+        <Button
+          onClick={()=>{handleMenuItemClick("inventory")}}
+          style={{ padding:"10px", textAlign:"left", color:"#1a237e"}}
+        >
+            <InventoryRoundedIcon sx={{marginRight:'5px'}}/>Inventory
+        </Button>
+        <Button
+          onClick={()=>{handleMenuItemClick("addproduct")}}
+          style={{ padding:"10px", textAlign:"left", color:"#1a237e"}}
+        >
+         <AddBoxOutlinedIcon sx={{marginRight:'5px'}}/>Add Product
+        </Button>
+
+
+        {/* <IconButton onClick={handleMenuClick}>
           <MenuIcon />
-        </IconButton>
+        </IconButton> */}
       </div>
 
-        <Typography  style={{cursor:"pointer"}}>
+        <Typography  style={{cursor:"pointer", paddingRight:"20px", color:"#ff5722"}}>
                 Welcome Admin!
         </Typography>
         
@@ -82,7 +99,7 @@ export default function MenuAppBar() {
                 Admin Activities
             </Typography>
         </div> */}
-              <Menu
+              {/* <Menu
                 id="adminMenu"
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -95,7 +112,7 @@ export default function MenuAppBar() {
                 
                 <MenuItem onClick={()=>{handleMenuItemClick("inventory")}}  style={{display:"block", padding:"10px", textAlign:"left"}}>Inventory</MenuItem>
                 <MenuItem onClick={()=>{handleMenuItemClick("addproduct")}} style={{display:"block", padding:"10px", textAlign:"left"}} >Add Product</MenuItem>
-              </Menu>
+              </Menu> */}
     </div>
   );
 }

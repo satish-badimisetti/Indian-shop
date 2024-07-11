@@ -12,7 +12,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+
 import Avatar from '@mui/material/Avatar';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
@@ -247,14 +247,7 @@ const NavbarRenderer = () => {
                 On SALE
               </Button>
             </div>
-            {auth?.user?.userRole=="admin" &&
-              <div className={classes.menuContainerGreen}>
-                <Button style={{color:"blue", fontWeight:'bold'}} onClick={()=>{navigate("/admin")}}>
-                  <AdminPanelSettingsIcon />
-                  Admin
-                </Button>
-              </div>
-            }
+            
             
         </Toolbar>
       </AppBar>

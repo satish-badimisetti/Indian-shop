@@ -18,7 +18,8 @@ const BASE_URL = apiConfig.BASE_URL;
 import GroceryItemCardRenderer from '../Grocery-Item-Card/Grocery-Item-Card-Renderer';
 import { useGetProductsAPI } from "../../api/productsAPI";
 import NavbarRenderer from '../Components-Nav-Bar/Nav-Bar-Renderer';
-
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import {red} from '@material-ui/core/colors';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -198,28 +199,38 @@ const HeaderRenderer = () => {
               border: '1px rgba(0, 0, 0, 0.27) solid'
             }}
           />
-          <div className={classes.searchContainer}>
-            <InputBase
-              placeholder="Search everything at our store"
-              className={classes.searchInput}
-              value={searchString}
-              onChange={(e)=>{handleSearchStringChange(e)}}
-            />
-            <div className={classes.searchIcon}>
-              <SearchIcon style={{ width: 30, height: 30 }} />
+          {auth?.user?.userRole!="admin" &&
+            <div className={classes.searchContainer} style={{flex:1}}>
+              <InputBase
+                placeholder="Search everything at our store"
+                className={classes.searchInput}
+                value={searchString}
+                onChange={(e)=>{handleSearchStringChange(e)}}
+              />
+              <div className={classes.searchIcon}>
+                <SearchIcon style={{ width: 30, height: 30 }} />
+              </div>
             </div>
-          </div>
+          }
+          {auth?.user?.userRole=="admin" &&
+              <div className={classes.menuContainerGreen} style={{flex:1}}>
+                <Button style={{color:"blue", fontWeight:'bold'}} onClick={()=>{navigate("/admin")}}>
+                  <AdminPanelSettingsIcon />
+                  Admin
+                </Button>
+              </div>
+            }
         {!auth?.user &&
             <div className={classes.menuContainerGreen}>
-            <Button style={{color:"blue", fontWeight:'bold', marginLeft:"auto"}} onClick={()=>{navigate("/login")}} className={classes.menuItem}>
-                Login
+            <Button style={{color:"blue", fontWeight:'bold', marginLeft:"auto"}} onClick={()=>{navigate("/login")}}>
+                LOGIN
             </Button>
             </div>
         }
         {auth?.user &&
             <div className={classes.menuContainerGreen}>
-            <Button style={{color:"blue", fontWeight:'bold', marginLeft:"auto"}} onClick={()=>{handleLogout()}} className={classes.menuItem}>
-                Logout
+            <Button style={{color:"#f44336", fontWeight:'bold', marginLeft:"auto"}} onClick={()=>{handleLogout()}}>
+                LOGOUT
             </Button>
             </div>
         }
@@ -241,7 +252,10 @@ const HeaderRenderer = () => {
           </IconButton> */}
         </Toolbar>
       </AppBar>
-      <NavbarRenderer />
+      {auth?.user?.userRole!="admin" &&
+        <NavbarRenderer />
+      }
+      
       {
         searchString.length>0 &&
         <>

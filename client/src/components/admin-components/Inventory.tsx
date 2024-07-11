@@ -11,7 +11,12 @@ import TablePagination from '@mui/material/TablePagination';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useGetProductsAPI, useUpdateOneProductAPI, useDeleteOneProductAPI, useUpdateMultipleProductsAPI } from "../../api/productsAPI";
-
+import { Typography } from "@material-ui/core";
+import TaskIcon from '@mui/icons-material/Task';
+import Badge from '@mui/material/Badge';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
+import { green, red, pink } from '@mui/material/colors';
 interface filterValuesObejct{
     [key:string]:"string"
 }
@@ -149,14 +154,14 @@ export default function Inventory(){
     const [keysChecked,setKeysChecked]=useState<any[]>([]);//the values of the key field for which the rows are checked
     const [sortField,setSortField]=useState<any[]>([]);//the field on which sorting is applied latest
     const [editingRows,setEditingRows]=useState(0);//number of rows in edit state
-    const [discountUpdateState,setDiscountUpdateState]=useState(false);
+    
     //messagebox
     const [message,setMessage]=useState<string | null>(null);
     const [messageBoxColor,setMessageBoxColor]=useState("#B2FF59");
     //end
     //table pagination
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState(15);
     const handleChangePage = (
         event: React.MouseEvent<HTMLButtonElement> | null,
         newPage: number,
@@ -317,6 +322,7 @@ export default function Inventory(){
             }
         )
         setPage(0);
+        setKeysChecked([]);
         SetProductsToShow(filteredProducts);
     }
     //returns sorted products based on fieldname and sort order
@@ -328,19 +334,47 @@ export default function Inventory(){
     const onSortClicked=(field:string,sortOrder:number)=>{
         SetProductsToShow((prev:any[])=>sortTheProducts(prev,field,sortOrder));
         setSortField([field,sortOrder]);
-    }  
+    } 
+    //check all and uncheck all in the page
+    const checkAllInPage=()=>{
+        const keyFieldName=getKeyFieldName();
+        let finalArray:any=[];
+        productsToShow.slice((page*rowsPerPage),(page*rowsPerPage)+rowsPerPage).forEach(
+            (productObject:any)=>{
+                finalArray.push(productObject[keyFieldName]);
+            }
+        )
+        setKeysChecked(finalArray);
+    }
+    const unCheckAll=()=>{
+        setKeysChecked([])
+    }
     //updates total no. of editing rows
     const updateEditingRows=(status:boolean)=>{
         if(status) setEditingRows((prev)=>prev+1)
         else setEditingRows((prev)=>prev-1)
     }
-    const handleDiscountDivOpen=()=>{
-        setDiscountUpdateState(true);
+    //bulkupdation
+    const [bulkUpdateState,setBulkUpdateState]=useState(false);
+    const [formField,setFormField]=useState('');
+    const [formString,setFormString]=useState("");
+    const [formType,setFormType]=useState("");
+    const [formOptions,setFormOptions]=useState<string[]>([]);
+    
+    const handleBulkUpdateDivOpen=(formString:string,fieldName:string,fieldType:string,formOptions:string[]=[])=>{
+        setFormField(fieldName);
+        setFormString(formString);
+        setFormType(fieldType);
+        setFormOptions(formOptions)
+        setBulkUpdateState(true);
     }
-    const handleDiscountDivClose=()=>{
-        setDiscountUpdateState(false);
+    const handleBulkUpdateDivClose=()=>{
+        setBulkUpdateState(false);
     }
-    const updateDiscount=async (discount:number)=>{
+    const bulkUpdateField=async (fieldName:string,value:number)=>{
+        if(formType=="number"){
+            value=value/100*100
+        }
         const keyFieldName=getKeyFieldName();
         let finalArray:any=[];
         productsToShow.slice((page*rowsPerPage),(page*rowsPerPage)+rowsPerPage).map(
@@ -348,13 +382,13 @@ export default function Inventory(){
                 const keyId=productObject[keyFieldName];
                 
                 if(keysChecked.indexOf(keyId)>-1){
-                    let newProductObject={...productObject,"Discount":discount}
-                    const productModificationObject:any={"Discount":discount/100};
+                    let newProductObject={...productObject,[fieldName]:value};
+                    const productModificationObject:any={[fieldName]:fieldName==="Discount"?value/100:value};
 
                     productFields.map((fieldObject:any)=>{
                         if(fieldObject.type=="calc"){
-                            const expression=fieldObject.calc;
-                            const calculatedValue=roundOff1(calculate(expression,newProductObject));
+                            // const expression=fieldObject.calc;
+                            const calculatedValue=roundOff1(calculate(fieldObject.calc,newProductObject));
                             newProductObject[fieldObject.field]=calculatedValue;
                             productModificationObject[fieldObject.field]=calculatedValue;
                         }
@@ -363,16 +397,16 @@ export default function Inventory(){
                 }
             }
         )
+        // console.log(finalArray);
         const response=await useUpdateMultipleProductsAPI(finalArray);
         if(response.length==finalArray.length){
             showMessage("All requests are Processed!")
         }
         else{
             const modifiedObjects=response.join(", ");
-            showMessage(`Able to modify : ${modifiedObjects}`);
+            showMessage(`Able to modify : ${modifiedObjects}`, 3000);
         }
         fetchProducts();
-        
     }
     const actions:{action:string,func:Function}[]=[
         {action:"edit",func:editFunction},
@@ -385,13 +419,19 @@ export default function Inventory(){
                 style={{
                     display:"flex",
                     margin:"10px",
-                    gap:"10px",
+                    
                     justifyContent:"center",
                     alignContent:"center",
                 }}
             >
-                <div className="buttonsDiv" style={{flex:1, justifyContent:"center",alignContent:"center"}}>
-                    <Button variant="outlined" onClick={handleDiscountDivOpen} disabled={keysChecked.length===0?true:false}>Update Discount</Button>
+                <div style={{flex:1,alignContent:"center"}}>
+                    <Badge badgeContent={keysChecked.length} color="success" style={{marginRight:"20px"}}>
+                        <TaskIcon />
+                    </Badge>
+                    <Button style={{margin:"7px", color:"#FF4081"}} variant="outlined" onClick={()=>handleBulkUpdateDivOpen("Discount","Discount","number")} disabled={keysChecked.length===0?true:false}>Update Discount</Button>
+                    <Button style={{margin:"7px", color:"#E040FB"}} variant="outlined" onClick={()=>handleBulkUpdateDivOpen("Quantity","Quantity","number")} disabled={keysChecked.length===0?true:false}>Update Qty.</Button>
+                    <Button style={{margin:"7px", color:"#FF9800"}} variant="outlined" onClick={()=>handleBulkUpdateDivOpen("Price","Price","number")} disabled={keysChecked.length===0?true:false}>Update Price.</Button>
+                    <Button style={{margin:"7px", color:"#00C853"}} variant="outlined" onClick={()=>handleBulkUpdateDivOpen("Product Visibility","ProductVisibility","select",["Yes","No"])} disabled={keysChecked.length===0?true:false}>Update Visibility</Button>
                 </div>
                 <TablePagination
                     component="div"
@@ -404,38 +444,70 @@ export default function Inventory(){
                 />
             </div>
             <Dialog
-                open={discountUpdateState}
-                onClose={handleDiscountDivClose}
+                open={bulkUpdateState}
+                onClose={handleBulkUpdateDivClose}
                 PaperProps={{
                     component: 'form',
                     onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
                       event.preventDefault();
                       const formData = new FormData(event.currentTarget);
                       const formJson = Object.fromEntries((formData as any).entries());
-                      const discount = formJson.discount;
-                      updateDiscount(discount);
-                      handleDiscountDivClose();
+                      const formValue = formJson.formValue;
+                    //   updateDiscount(discount);
+                      bulkUpdateField(formField,formValue);
+                      handleBulkUpdateDivClose();
                     },
                   }}
             >
                 <DialogContent>
                     <DialogContentText>
-                        Enter Discount to Update for the selected Products:
+                        Enter {formString} to Update for the selected Products:
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        required
-                        margin="dense"
-                        id="discount"
-                        name="discount"
-                        label="Discount"
-                        type="number"
-                        fullWidth
-                        variant="standard"
-                    />
+                    {formType!="select" &&
+                        <TextField
+                            autoFocus
+                            required
+                            margin="dense"
+                            id="formValue"
+                            name="formValue"
+                            label={formString}
+                            type={formType}
+                            inputProps={{ step: "0.001" }}
+                            fullWidth
+                            variant="standard"
+                        />
+                    }
+                    {formType=="select" &&
+
+                        <TextField
+                            select
+                            autoFocus
+                            required
+                            margin="dense"
+                            id="formValue"
+                            name="formValue"
+                            label={formString}
+                            fullWidth
+                            defaultValue={formOptions[0]}
+                            // onChange={(e) => setValue(e.target.value)}
+                            variant="outlined"
+                            sx={{
+                                "& .MuiInputBase-root":{
+                                    padding:"7px",
+                                    paddingLeft:"10px"
+                                }
+                            }}
+                            >
+                            {formOptions.map((option) => (
+                                <MenuItem style={{display:"block", padding:"5px"}} key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    }
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDiscountDivClose}>Cancel</Button>
+                    <Button onClick={handleBulkUpdateDivClose}>Cancel</Button>
                     <Button type="submit">Update</Button>
                 </DialogActions>  
             </Dialog>
@@ -459,7 +531,15 @@ export default function Inventory(){
                     <thead>
                         <tr>
                             <th style={{width:"100px"}}>
-                                Actions
+                                <div>
+                                    <div>
+                                        Actions
+                                    </div>
+                                    <div>
+                                        <DoneAllIcon sx={{color:green[500], marginRight:"6px", marginTop:"5px", cursor:"pointer"}} fontSize="small" onClick={checkAllInPage}/>
+                                        <RemoveDoneIcon sx={{color:pink["A400"], cursor:"pointer"}} fontSize="small" onClick={unCheckAll}/>
+                                    </div>
+                                </div>
                             </th>
                             {
                                 productFields.map(
