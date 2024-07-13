@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import apiConfig from "./client/endpoint";
 import api from "./client/webClient";
 
-// Get Products API
+// Get Products API => returns all the products
 export const useGetProductsAPI = (): Promise<any> => {
   const url = apiConfig.GET.GET_PRODUCTS;
 
@@ -72,14 +72,14 @@ export const useCategoriesAPI = (): Promise<category[]> => {
   );
 };
 
-// Get Products by Filter API
+// Get Products by Filter API-> returns only visible products
 export const useGetProductsByFilterAPI = (filterObject: any): Promise<any[]> => {
   const url = apiConfig.POST.PRODUCTSBYFILTER;
-
   return api.post(url, filterObject).then(
     (response) => {
+      
       if (response.data.status === "success") {
-        return response.data.products;
+        return response.data.products.filter((product:any)=>{return product.ProductVisibility=="Yes"});
       } else {
         return [];
       }
@@ -92,7 +92,7 @@ export const useGetProductsByFilterAPI = (filterObject: any): Promise<any[]> => 
   );
 };
 
-// Get Products by Category ID API
+// Get Products by Category ID API -> returns only visible products
 export const useGetProductsByCategoryIDAPI = (catId: any): Promise<any[]> => {
   const url = apiConfig.POST.PRODUCTSBYCATID;
 
@@ -100,7 +100,7 @@ export const useGetProductsByCategoryIDAPI = (catId: any): Promise<any[]> => {
     (response) => {
       if (response.data.status === "success") {
         console.log(response.data.products);
-        return response.data.products;
+        return response.data.products.filter((product:any)=>product.ProductVisibility=="Yes");
       } else {
         return [];
       }

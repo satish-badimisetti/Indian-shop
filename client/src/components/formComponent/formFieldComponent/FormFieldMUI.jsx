@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import validateFields from '../validationModule';
-import { TextField, Select, FormControl, InputLabel, MenuItem, FormHelperText, Checkbox, ListItemText } from '@mui/material';
+import { TextField, Select, FormControl, InputLabel, MenuItem, FormHelperText, Checkbox, ListItemText, Box, Chip } from '@mui/material';
 
 export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}){
     const {fieldName}=fieldObject
@@ -73,7 +73,24 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                     variant="standard"
                                     helperText={errors.join(", ")}
                                 />
-
+                            }
+                            {fieldType==="textBox" &&
+                                <TextField
+                                    size='small'
+                                    error={errors.length>0}
+                                    sx={{width:"100%",background:"white"}}
+                                    value={fieldValue}
+                                    onChange={(e)=>{handleInputChange(e)}}
+                                    name={fieldName}
+                                    label={`${fieldLabel} : ${validationSchema.notEmpty ? "*":""}`}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                        style:{color:"green"}
+                                      }}
+                                    variant="outlined"
+                                    multiline
+                                    helperText={errors.join(", ")}
+                                />
                             }
                             {fieldType==="select" &&
                                 <FormControl sx={{ minWidth: 120, width:"100%" }}>
@@ -89,7 +106,7 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                         {
                                             fieldObject.options.map(
                                                 (thisOption, _id)=>{
-                                                    return(<MenuItem value={thisOption.value} key={_id}>{thisOption.option}</MenuItem>)
+                                                    return(<MenuItem value={thisOption.value} key={_id} style={{display:"block",padding:"5px"}}>{thisOption.option}</MenuItem>)
                                                 }
                                             )
                                         }
@@ -109,13 +126,22 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                             onChange={(e)=>{handleCheckboxChange(e)}}
                                             variant='standard'
                                             name={fieldName}    
-                                            renderValue={(selectedArray) => selectedArray.join(', ')}
+                                            renderValue={(selectedArray) =>(
+                                                        <Box sx={{display:"flex", flexWrap:"wrap", gap:"1px"}}>
+                                                            {selectedArray.map(
+                                                                (value)=>{return <Chip key={value} label={value} />}
+                                                                )
+                                                            }
+                                                        </Box>
+                                                    )}
                                         >
                                             {fieldObject.options.map(
                                                 (thisOption, _id) => (
-                                                    <MenuItem key={_id} value={thisOption.value} dense>
-                                                        <Checkbox checked={selectedArray.indexOf(thisOption.value) > -1} size="small"/>
-                                                        <ListItemText primary={thisOption.option} />
+                                                    <MenuItem key={_id} value={thisOption.value} dense style={{display:"block",padding:"5px"}}>
+                                                        <div style={{display:"flex", gap:"4px"}}>
+                                                            <Checkbox checked={selectedArray.indexOf(thisOption.value) > -1} size="small"/>
+                                                            <ListItemText primary={thisOption.option} />
+                                                        </div>
                                                     </MenuItem>
                                                     )
                                                 )

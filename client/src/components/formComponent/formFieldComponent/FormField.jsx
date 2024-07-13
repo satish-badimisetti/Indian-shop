@@ -122,6 +122,7 @@ export default function FormField({fieldObject, setterFunction, errorUpdater}){
             'fontSize':'1em',
             'color':'red'
         }
+
     }
     return(    
         <div style={styles.formField}>

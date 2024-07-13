@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
     paddingLeft: 100,
     paddingRight: 100,
-    paddingTop: 10,
+    // paddingTop: 10,
   },
   logo: {
     flexGrow: 1,

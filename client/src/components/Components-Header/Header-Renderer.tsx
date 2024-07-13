@@ -16,7 +16,7 @@ import LocationSearchRenderer from '../Components-Nav-Bar/Location-Search-Render
 import { useAuth } from '../Authentication-Components/Auth';
 const BASE_URL = apiConfig.BASE_URL;
 import GroceryItemCardRenderer from '../Grocery-Item-Card/Grocery-Item-Card-Renderer';
-import { useGetProductsAPI } from "../../api/productsAPI";
+import { useGetProductsByFilterAPI } from "../../api/productsAPI";
 import NavbarRenderer from '../Components-Nav-Bar/Nav-Bar-Renderer';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {red} from '@material-ui/core/colors';
@@ -126,9 +126,9 @@ const HeaderRenderer = () => {
         fetchProducts();
       },[]);
     const fetchProducts=async ()=>{
-        const productsReceived=await useGetProductsAPI();
-        setProducts(productsReceived.products);
-        setProductsToShow(productsReceived.products);
+        const productsReceived=await useGetProductsByFilterAPI({});
+        setProducts(productsReceived);
+        setProductsToShow(productsReceived);
     }
     const handleSearchStringChange=(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
         const newSearchString=e.target.value;
@@ -252,9 +252,9 @@ const HeaderRenderer = () => {
           </IconButton> */}
         </Toolbar>
       </AppBar>
-      {auth?.user?.userRole!="admin" &&
+      
         <NavbarRenderer />
-      }
+      
       
       {
         searchString.length>0 &&

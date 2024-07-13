@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 
 import FilterListIcon from '@mui/icons-material/FilterList';
 
@@ -16,26 +16,38 @@ import TaskIcon from '@mui/icons-material/Task';
 import Badge from '@mui/material/Badge';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { green, red, pink } from '@mui/material/colors';
+import { updateParameter } from "typescript";
 interface filterValuesObejct{
     [key:string]:"string"
 }
 
 export default function Inventory(){
-
+    const [discrepancies,setDiscrepancies]=useState<any>([]);
+    const [viewDiscrepancy,setViewDiscrepancy]=useState(false);
+    const toggleViewDiscrepancies=()=>{
+        const nextStatus=!viewDiscrepancy;
+        setViewDiscrepancy(nextStatus);
+        if(nextStatus)
+            updateProductsToShow(filterValues,discrepancies)
+        else   
+            updateProductsToShow(filterValues);
+    }
     const [productFields,setProductFields]=useState([
         {field:"_id",key:true,title:"Doc Id",type:"display", style:{ width:"80px",textAlign:"center"},columnVisible:false},
-        {field:"PROD_ID",title:"Prod Id",type:"text",toolbar:["search"], style:{ width:"80px",textAlign:"center"},columnVisible:true},
+        {field:"PROD_ID",title:"Prod Id",type:"display",toolbar:["search","sort"], style:{ width:"80px",textAlign:"left"},columnVisible:true},
         {field:"Name",title:"Product Name",type:"display",toolbar:["search"], style:{width:"300px",textAlign:"left"},columnVisible:true},
         {field:"CAT_NAME",title:"Category Name",type:"display",toolbar:["select","sort"],selectOptions:["Snacks","Milk"], style:{width:"150px",textAlign:"left"},columnVisible:true},
         {field:"Brand",title:"Brand",type:"display",toolbar:["select"],selectOptions:["Maggi","Heritage"], style:{width:"125px",textAlign:"left"},columnVisible:true},
-        {field:"NoofUnits",title:"No of Units",type:"text", size:3, style:{textAlign:"right"},columnVisible:true},
+        {field:"NoofUnits",title:"No of Units",type:"number", size:3, style:{textAlign:"right"},columnVisible:true},
         {field:"Units",title:"Units",type:"display", style:{textAlign:"right"},columnVisible:true},
-        {field:"NetWeight",title:"Net Weight",type:"text", style:{textAlign:"right"},columnVisible:true},
-        {field:"Quantity",title:"Qty.",type:"text", style:{textAlign:"right"},columnVisible:true},
-        {field:"Price",title:"Price",type:"text", toolbar:["sort"], style:{ textAlign:"right"},columnVisible:true},
-        {field:"Discount",title:"Disc. %",type:"text", toolbar:["sort"], style:{ textAlign:"center"},columnVisible:true},
-        {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"text", style:{textAlign:"center"},columnVisible:true},
+        {field:"NetWeight",title:"Net Weight",type:"number", style:{textAlign:"right"},columnVisible:true},
+        {field:"Quantity",title:"Qty.",type:"number", style:{textAlign:"right",size:1},columnVisible:true},
+        {field:"Price",title:"Price",type:"number", toolbar:["sort"], style:{ textAlign:"right"},columnVisible:true},
+        {field:"Discount",title:"Disc. %",type:"number", toolbar:["sort"], style:{ textAlign:"center"},columnVisible:true},
+        {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"number", style:{textAlign:"center"},columnVisible:true},
         {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ width:"200px",textAlign:"left"},columnVisible:true},
         {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]},columnVisible:true},
         {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"calc",calc:{"devide":["DiscountedPrice","NetWeight"]},style:{textAlign:"right"},columnVisible:true},
@@ -103,7 +115,8 @@ export default function Inventory(){
         let categoriesArray:any=[];
         let brandsArray:any=[];
         let labelsArray:any=[];
-        const modifiedProducts=(productsReceived.products).map(
+        let discrepancyArray:any=[];
+        const modifiedProducts=productsReceived.products?.map(
             (product:any)=>{
                 const cat=product.CAT_NAME;
                 const brand=product.Brand;
@@ -121,16 +134,22 @@ export default function Inventory(){
                         }
                     }
                 )
-                return {...product,
-                            Discount:Math.round(product.Discount*100),
-                            Labels:labels,
-                            PricePerUnitQuantity:parseFloat((product.PricePerUnitQuantity)?.toFixed(3)),
-                            NetWeight:parseFloat((product.NetWeight)?.toFixed(3)),
-                        }
+                const alteredProductObject={...product,
+                                                Discount:Math.round(product.Discount*100),
+                                                Labels:labels,
+                                                Price:parseFloat((product.Price)?.toFixed(2)),
+                                                PricePerUnitQuantity:parseFloat((product.PricePerUnitQuantity)?.toFixed(3)),
+                                                NetWeight:parseFloat((product.NetWeight)?.toFixed(3)),
+                                            }
+                if(checkForDiscrepency(product)){
+                    discrepancyArray.push(alteredProductObject);
+                }
+                return alteredProductObject;
             }
         )
-        updateOptionsInFields(categoriesArray,brandsArray,labelsArray);
-        setProducts(modifiedProducts);
+        updateOptionsInFields(categoriesArray.sort(),brandsArray.sort(),labelsArray);
+        setProducts(modifiedProducts?modifiedProducts:[]);
+        setDiscrepancies(discrepancyArray);
     }
     const updateOptionsInFields=(categoriesArray:string[],brandsArray:string[],labelsArray:string[])=>{
         let newArray:any[]=[];
@@ -148,7 +167,9 @@ export default function Inventory(){
         })
         setProductFields(newArray);
     }
-    
+    const checkForDiscrepency=(rowData:any)=>{
+        return rowData.Quantity<rowData.NoOfQuantitiesOnDiscountedPrice
+    }
     const [productsToShow,SetProductsToShow]=useState<any>([])//products for display => after filter, sort
     const [filterValues,setFilterValues]=useState<filterValuesObejct>({});//object {"filedName":"fieldValue"}-filters applied
     const [keysChecked,setKeysChecked]=useState<any[]>([]);//the values of the key field for which the rows are checked
@@ -199,17 +220,15 @@ export default function Inventory(){
     //updates rowData based on keyFieldName
     const updateProducts=(rowData:any)=>{
         const keyField=getKeyFieldName();
-        setProducts(products.map(
-            (product:any)=>{
-                if(product[keyField]==rowData[keyField]){
-                    return rowData
-                }
-                return product
-            }
-        ))
+        setProducts(
+            (prevProducts)=>
+                prevProducts.map(
+                    (product:any) => (product[keyField]==rowData[keyField]) ? rowData : product
+                )
+        )
     }
-    //editFunction to receive rowdata from getRowTable
-    const editFunction=async (rowData:any)=>{
+    //editFunction after receiving rowdata from getRowTable
+    const editFunction=useCallback( async (rowData:any)=>{
         productFields.map(
             (field)=>{
                 if(field.type=="calc"){
@@ -225,12 +244,13 @@ export default function Inventory(){
         const status=await useUpdateOneProductAPI(rowData._id,copyOfRowData);
         if(status) {
             showMessage(`Successfulyy Updated the Product: ${rowData.Name}`);
+            updateProducts(rowData);
         }
         else {
             showMessage(`Unable to update the Product: ${rowData.Name}. Try after some time or contact admin`,2000,"error");
         }
-        fetchProducts();
-    }
+        
+    },[]);
     const showMessage=(message:string,duration=2000,style:string="success")=>{
         if(style=="error") setMessageBoxColor("#FB8C00");
         setMessage(message);
@@ -240,7 +260,7 @@ export default function Inventory(){
         },duration)
     }
     //deleteFunction to receive rowdata from getRowTable
-    const deleteFunction=async (rowData:any)=>{
+    const deleteFunction=useCallback(async (rowData:any)=>{
         const status=await useDeleteOneProductAPI(rowData._id);
         if(status) {
             showMessage(`Successfulyy Deleted the Product: ${rowData.Name}`);
@@ -249,9 +269,9 @@ export default function Inventory(){
             showMessage(`Unable to Delete the Product: ${rowData.Name}. Try after some time or contact admin`,2000,"error");
         }
         fetchProducts();
-    }
+    },[]);
     //checkFunction to received rowdata from getRowTable
-    const checkFunction=(keyValue:any,status:"checked" | "not-checked")=>{
+    const checkFunction=useCallback((keyValue:any,status:"checked" | "not-checked")=>{
         let newArray=[];
         if(status=="checked"){
             newArray=[...keysChecked,keyValue];
@@ -260,12 +280,12 @@ export default function Inventory(){
             newArray=keysChecked.filter(value=>value!=keyValue);
         }
         setKeysChecked(newArray);
-    }
+    },[]);
     //updates filterValuesObject, updates products to show based on new Filters
     const updateFilterValues=(fieldName:any,fieldValue:any)=>{
         const filterValuesObjectNew:filterValuesObejct={...filterValues,[fieldName]:fieldValue};
         setFilterValues(filterValuesObjectNew);
-        updateProductsToShow(filterValuesObjectNew);
+        updateProductsToShow(filterValuesObjectNew,viewDiscrepancy?discrepancies:products);
     }
     const getComparisionType=(field:string)=>{
         let searchType=null;
@@ -350,10 +370,10 @@ export default function Inventory(){
         setKeysChecked([])
     }
     //updates total no. of editing rows
-    const updateEditingRows=(status:boolean)=>{
+    const updateEditingRows=useCallback((status:boolean)=>{
         if(status) setEditingRows((prev)=>prev+1)
         else setEditingRows((prev)=>prev-1)
-    }
+    },[]);
     //bulkupdation
     const [bulkUpdateState,setBulkUpdateState]=useState(false);
     const [formField,setFormField]=useState('');
@@ -408,6 +428,7 @@ export default function Inventory(){
         }
         fetchProducts();
     }
+    //end
     const actions:{action:string,func:Function}[]=[
         {action:"edit",func:editFunction},
         {action:"delete",func:deleteFunction},
@@ -425,6 +446,14 @@ export default function Inventory(){
                 }}
             >
                 <div style={{flex:1,alignContent:"center"}}>
+                    <Badge badgeContent={discrepancies.length} color="error" style={{marginRight:"50px"}}>
+                        
+                        <Button onClick={toggleViewDiscrepancies}>
+                        {!viewDiscrepancy && <VisibilityIcon sx={{marginRight:"5px"}}/>}
+                        {viewDiscrepancy && <VisibilityOffIcon sx={{marginRight:"5px"}}/>}
+                            Descrepancies
+                        </Button>
+                    </Badge>
                     <Badge badgeContent={keysChecked.length} color="success" style={{marginRight:"20px"}}>
                         <TaskIcon />
                     </Badge>
@@ -662,7 +691,8 @@ export default function Inventory(){
                                             tableRowData={thisProduct}
                                             fieldsData={productFields}
                                             actions={actions}
-                                            key={index}
+                                            
+                                            key={thisProduct._id}
                                             editFreezeFunction={updateEditingRows}
                                             checkStatus={keysChecked.indexOf(thisProduct[keyFieldName])>-1}
                                         />

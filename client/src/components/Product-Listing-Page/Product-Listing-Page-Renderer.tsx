@@ -32,6 +32,7 @@ const ProductListingPageRenderer: React.FC = () => {
 
   const updateProducts=async ()=>{
     const productsList=await useGetProductsByCategoryIDAPI(categoryid);
+    
     setProducts(productsList);
     updateProductsToShow(productsList,searchString,sortOption===1?1:-1);
   }
@@ -43,7 +44,7 @@ const ProductListingPageRenderer: React.FC = () => {
   const updateProductsToShow=(products:any[],searchText:string,sortOrder:number=0)=>{
     setProductsToShow(
       products.filter((product)=>{
-        return product.Name.toUpperCase().includes(searchText.toLocaleUpperCase());
+        return (`${product.Brand}-${product.Name}`).toUpperCase().includes(searchText.toLocaleUpperCase());
       }).sort((a,b)=>(a.DiscountedPrice - b.DiscountedPrice)*sortOrder)
     )
   }
@@ -64,7 +65,7 @@ const ProductListingPageRenderer: React.FC = () => {
             {products[0]?.CAT_NAME}
           </Typography>
           <Typography variant="body2">
-            <span >{products.length} available</span>
+            <span >{productsToShow.length} available</span>
           </Typography>
         </div>
         <div className={classes.controls}>
@@ -99,9 +100,10 @@ const ProductListingPageRenderer: React.FC = () => {
       <Divider className={classes.divider} />
       <Grid container spacing={3}>
         {productsToShow.map((product) => (
-          <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
-            <GroceryItemCardRenderer product={product}/>
-          </Grid>
+            <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
+              <GroceryItemCardRenderer product={product}/>
+            </Grid>
+          
         ))}
       </Grid>
     </Container>

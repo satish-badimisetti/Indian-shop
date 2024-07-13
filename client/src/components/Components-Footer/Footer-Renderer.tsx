@@ -45,7 +45,7 @@ const FooterRenderer: React.FC = () => {
                 {/* //grid-1 top right grid */}
                 <Grid item xs={8} sm={9} md={8} lg={8} >
                   <Typography style={{paddingBottom:"20px", paddingRight:"15px"}} align="justify" gutterBottom>
-                    Discover Milan's first Indain grocery store! We offer a wide selection of authentic spices, fresh produce and speciality items from Asia. Explore and experience the taste of Asian foods right here in Milan, Italy.
+                    Discover Milan's first Indain grocery store since 1994! We offer a wide selection of authentic spices, fresh produce and speciality items from Asia. Explore and experience the taste of Asian foods right here in Milan, Italy.
                   </Typography>
                   <Grid item  style={{marginBottom:"10px"}} lg={12}>
                     <Typography variant="body1" style={{ fontWeight: 900 }}>
@@ -127,11 +127,6 @@ const FooterRenderer: React.FC = () => {
                   </Typography>
                   <Grid container spacing={2}>
                     <Grid item>
-                      <div style={{ width: 26, height: 26, }} >
-                        <X />
-                      </div>
-                    </Grid>
-                    <Grid item>
                       <div
                           style={{ width: 26, height: 26, cursor:"pointer" }}
                           onClick={()=>{window.open("https://www.facebook.com/indianshop.milano/?locale=it_IT", '_blank');}}>
@@ -152,11 +147,7 @@ const FooterRenderer: React.FC = () => {
                         <YouTube />
                       </div>
                     </Grid>
-                    <Grid item>
-                      <div style={{ width: 26, height: 26, }} >
-                        <LinkedIn />
-                      </div>
-                    </Grid>
+                    
                   </Grid>
                 </Grid>
 

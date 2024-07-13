@@ -110,6 +110,20 @@ async function deleteProduct(productDocumentId){
     throw err;
   }
 }
+async function getOptionsForAddProduct(){
+  const client=await createDocDBConnection();
+  try{
+    const db=client.db(dbName);
+    const collection=db.collection("Products");
+    
+    const result=await collection.aggregate( [{$group:{ _id: "$Brand" }}]);
+    result.forEach(doc => console.log(doc));
+
+  }catch(err){
+    throw err;
+  }
+}
+// getOptionsForAddProduct();
 //One time requirement for updaing the productvisibility of the products
 async function updateProductVisibility(){
   const client=await createDocDBConnection();
@@ -177,8 +191,7 @@ async function getProductsByFilter(filter) {
     const db = client.db(dbName);
     const col = db.collection("Products");
 
-    const products = await col.find({ Labels: filter}).toArray();
-    
+    const products = await col.find(filter).toArray();
     return products;
   } catch (err) {
     console.error("Error fetching getProductsByFilter: ", err);

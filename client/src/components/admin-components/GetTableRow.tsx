@@ -49,6 +49,11 @@ function GetTableRow(props:any){
         const value=e.target.value;
         setRowData({...rowData,[fieldName]:value});
     }
+    const onChangeInputFieldNumber=(e:React.ChangeEvent<any>)=>{
+        const fieldName=e.target.name;
+        const value=e.target.value;
+        setRowData({...rowData,[fieldName]:Number(value)});
+    }
     const onChangeSwitchInputField=(e:React.ChangeEvent<any>)=>{
         const fieldName=e.target.name;
         const value=e.target.checked? "Yes":"No";
@@ -168,6 +173,22 @@ function GetTableRow(props:any){
                                             value={rowData[field.field]}
                                             name={field.field}
                                             onChange={(e)=>onChangeInputField(e)}
+                                            disabled={editState? false:true}
+                                            
+                                        />
+                                    </td>
+                                )
+                            }
+                            else if(field.type=="number"){
+                                return (
+                                    <td key={index} style={field.style}>
+                                        <input
+                                            size={field.size?field.size:4}
+                                            className="number-input"
+                                            type="number"
+                                            value={rowData[field.field]}
+                                            name={field.field}
+                                            onChange={(e)=>onChangeInputFieldNumber(e)}
                                             disabled={editState? false:true}
                                             
                                         />

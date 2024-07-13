@@ -9,6 +9,7 @@ import {
   Typography,
   IconButton,
   TextField,
+  Grid
 } from "@material-ui/core";
 import { useStyles } from "./Grocerty-Item-Card.styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -33,12 +34,15 @@ const GroceryItemCardRenderer = (product: any) => {
     (item.brand=product.product.Brand),
     (item.units=product.product.Units);
     (item.NetWeight=product.product.NetWeight);
+    (item.Quantity=product.product.Quantity);
   }
 
   const classes: any = useStyles();
   return (
-    <>
+    
+<>
       {product.product && (
+        
         <Card className={classes.cardStyles}>
           <div className={classes.container1}></div>
           <div className={classes.container2}>
@@ -58,15 +62,34 @@ const GroceryItemCardRenderer = (product: any) => {
             <div className={classes.discountText}>{item.discount}% OFF</div>
           </div>
           <CardContent className={classes.title}>{item.brand} - {item.title} ({item.NetWeight} {item.units}) </CardContent>
-          <CardContent className={classes.price} >
-          €&nbsp;{item.pricePerVolume} / {item.units}
-          </CardContent>
-          <CardContent className={classes.priceContainer}>
-            <Typography className={classes.priceValue}>
-              €&nbsp;{item.currentPrice}
-              {item.originalPrice && ( item.discount>0 ? (<span>€&nbsp;{item.originalPrice}</span>) : "" )}
-            </Typography>
-          </CardContent>
+          {
+            item.Quantity && <>
+          
+                  <CardContent className={classes.price} >
+                  €&nbsp;{item.pricePerVolume} / {item.units}
+                  </CardContent>
+                  <CardContent className={classes.priceContainer}>
+                    <Typography className={classes.priceValue}>
+                      €&nbsp;{item.currentPrice}
+                      {item.originalPrice && ( item.discount>0 ? (<span>€&nbsp;{item.originalPrice}</span>) : "" )}
+                    </Typography>
+                  </CardContent>
+              </>
+          }
+          {
+            !item.Quantity &&
+              <div
+                style={{
+                    display:"flex",justifyContent:"center", alignItems:'center' ,position:"relative", top:"290px", bottom:"0px",
+                    background:"white", color:"red",
+                    height:"50px",
+                    textShadow: "1px 1px 3px #000000"
+                    }}>
+                  <Typography style={{fontSize:"20px"}}>
+                    Temporarily Outof Stock
+                  </Typography>
+              </div>
+          }
           {/* <CardActions className={classes.actionButtonsContainer}>
             <IconButton className={classes.cardItemIcons}>
               <RemoveIcon />
@@ -84,6 +107,7 @@ const GroceryItemCardRenderer = (product: any) => {
             </div>
           </CardActions> */}
         </Card>
+        
       )}
     </>
   );
