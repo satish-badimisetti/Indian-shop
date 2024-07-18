@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Copy Certificates
-COPY cert/ /etc/ssl/certs/
+COPY certs/ /etc/ssl/certs/
 
 # Install Modules
 RUN npm install
