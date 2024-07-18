@@ -79,7 +79,7 @@ export const useGetProductsByFilterAPI = (filterObject: any): Promise<any[]> => 
     (response) => {
       
       if (response.data.status === "success") {
-        return response.data.products.filter((product:any)=>{return product.ProductVisibility=="Yes"});
+        return response.data.products.filter((product:any)=>{return product.VISIBILITY=="YES"});
       } else {
         return [];
       }
@@ -100,7 +100,7 @@ export const useGetProductsByCategoryIDAPI = (catId: any): Promise<any[]> => {
     (response) => {
       if (response.data.status === "success") {
         console.log(response.data.products);
-        return response.data.products.filter((product:any)=>product.ProductVisibility=="Yes");
+        return response.data.products.filter((product:any)=>product.VISIBILITY=="YES");
       } else {
         return [];
       }
