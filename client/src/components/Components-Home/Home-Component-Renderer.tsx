@@ -15,6 +15,7 @@ import BannerRenderer from "../Components-Banner/Banner-Renderer";
 import GroceryItemForm from "../Components-Grocery-Item/Grocery-Item-Form";
 import ProductListingPageRenderer from "../Product-Listing-Page/Product-Listing-Page-Renderer";
 import { Link } from "react-router-dom";
+import { FloatingWhatsApp } from 'react-floating-whatsapp'
 
 export default function HomeComponentRenderer() {
 
@@ -28,7 +29,7 @@ export default function HomeComponentRenderer() {
       {/* <KitchenHomeSupplyRenderer /> */}
       <NewArrivalsRenderer />
       <ShopByBrandRenderer />
-      
+      <FloatingWhatsApp phoneNumber="+393888578000" accountName="Indianshop"/>
       {/* <ProductDetailsRenderer
         name={"Product Name"}
         description={"Product Description"}
