@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect, useCallback, useMemo} from "react";
 
 import FilterListIcon from '@mui/icons-material/FilterList';
 
@@ -20,6 +20,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { green, red, pink } from '@mui/material/colors';
 import { updateParameter } from "typescript";
+import GetTableHead from "./GetTableHead";
 interface filterValuesObejct{
     [key:string]:"string"
 }
@@ -134,6 +135,7 @@ export default function Inventory(){
                         }
                     }
                 )
+                console.log(product.PROD_ID);
                 const alteredProductObject={...product,
                                                 Discount:Math.round(product.Discount*100),
                                                 Labels:labels,
@@ -172,6 +174,7 @@ export default function Inventory(){
     }
     const [productsToShow,SetProductsToShow]=useState<any>([])//products for display => after filter, sort
     const [filterValues,setFilterValues]=useState<filterValuesObejct>({});//object {"filedName":"fieldValue"}-filters applied
+    const [checkAllStatus,setCheckAllStatus]=useState<"all" | "none" | null>(null);
     const [keysChecked,setKeysChecked]=useState<any[]>([]);//the values of the key field for which the rows are checked
     const [sortField,setSortField]=useState<any[]>([]);//the field on which sorting is applied latest
     const [editingRows,setEditingRows]=useState(0);//number of rows in edit state
@@ -198,13 +201,8 @@ export default function Inventory(){
       };
     //end of pagination
     
-    useEffect(
-        ()=>{
-            updateProductsToShow(filterValues);
-        },[products]
-    )
     //one key field - for identifying the row object
-    const getKeyFieldName=()=>{
+    const keyFieldName=useMemo(()=>{
         let keyField="";
         productFields.some(
             (fieldObject)=>{
@@ -215,11 +213,10 @@ export default function Inventory(){
             }
         )
         return keyField;
-    }
-    const keyFieldName=getKeyFieldName();
+    },[productFields]);
     //updates rowData based on keyFieldName
     const updateProducts=(rowData:any)=>{
-        const keyField=getKeyFieldName();
+        const keyField=keyFieldName;
         setProducts(
             (prevProducts)=>
                 prevProducts.map(
@@ -271,7 +268,7 @@ export default function Inventory(){
         fetchProducts();
     },[]);
     //checkFunction to received rowdata from getRowTable
-    const checkFunction=useCallback((keyValue:any,status:"checked" | "not-checked")=>{
+    const checkFunction=(keyValue:any,status:"checked" | "not-checked")=>{
         let newArray=[];
         if(status=="checked"){
             newArray=[...keysChecked,keyValue];
@@ -279,14 +276,66 @@ export default function Inventory(){
         else{
             newArray=keysChecked.filter(value=>value!=keyValue);
         }
+        setCheckAllStatus(null);
         setKeysChecked(newArray);
-    },[]);
+    };
     //updates filterValuesObject, updates products to show based on new Filters
     const updateFilterValues=(fieldName:any,fieldValue:any)=>{
         const filterValuesObjectNew:filterValuesObejct={...filterValues,[fieldName]:fieldValue};
         setFilterValues(filterValuesObjectNew);
         updateProductsToShow(filterValuesObjectNew,viewDiscrepancy?discrepancies:products);
     }
+
+    //testing function
+    const actionFromTableHeader=useCallback((actionObject:{actionType:string,value:any})=>{
+        if(actionObject.actionType=="sort"){
+            setSortField(actionObject.value);
+        }
+        else if(actionObject.actionType=="filter"){
+            setFilterValues(actionObject.value);
+        }
+        else if(actionObject.actionType=="check"){
+            setCheckAllStatus(actionObject.value)
+        }
+    },[])
+
+    useEffect(()=>{
+        SetProductsToShow(sortTheProducts([...productsToShow],sortField[0],sortField[1]));
+    },[sortField]);
+
+    useEffect(()=>{
+        let filteredProducts:any[]=[...products];
+        Object.keys(filterValues).forEach(
+            (field)=>{
+                filteredProducts=filterArray(filteredProducts,field,filterValues[field]);
+            }
+        )
+        setPage(0);
+        setKeysChecked([]);
+        if(sortField[0])
+            SetProductsToShow(sortTheProducts([...filteredProducts],sortField[0],sortField[1]));
+        else SetProductsToShow(filteredProducts);
+    },[filterValues, products]);
+
+    useEffect(()=>{
+        if(checkAllStatus=="all"){
+            let finalArray:any=[];
+            productsToShow.slice((page*rowsPerPage),(page*rowsPerPage)+rowsPerPage).forEach(
+                (productObject:any)=>{
+                    finalArray.push(productObject[keyFieldName]);
+                }
+            )
+            setKeysChecked(finalArray);
+        }
+        else if (checkAllStatus=="none"){
+            setKeysChecked([]);
+        }
+    },[checkAllStatus]);
+
+    useEffect(()=>{
+        console.log("products to show changed");
+    },[productsToShow]);
+
     const getComparisionType=(field:string)=>{
         let searchType=null;
         productFields.some(
@@ -347,23 +396,29 @@ export default function Inventory(){
     }
     //returns sorted products based on fieldname and sort order
     const sortTheProducts=(array:any[],field:string, sortOrder:number=0)=>{
-        if(typeof(array[0][field])=="number")
-            return array.sort((a,b)=>((a[field] - b[field])*sortOrder));
-        return array.sort((a,b)=>(a[field].localeCompare(b[field]))*sortOrder);
+        if(array.length==0) return [];
+        if(field){
+            if(typeof(array[0][field])=="number")
+                return array.sort((a,b)=>((a[field] - b[field])*sortOrder));
+            return array.sort((a,b)=>(a[field]?.localeCompare(b[field]))*sortOrder);
+        }
+        return array;
     }
     const onSortClicked=(field:string,sortOrder:number)=>{
         SetProductsToShow((prev:any[])=>sortTheProducts(prev,field,sortOrder));
         setSortField([field,sortOrder]);
     } 
+    
     //check all and uncheck all in the page
     const checkAllInPage=()=>{
-        const keyFieldName=getKeyFieldName();
         let finalArray:any=[];
+        console.log(productsToShow);
         productsToShow.slice((page*rowsPerPage),(page*rowsPerPage)+rowsPerPage).forEach(
             (productObject:any)=>{
                 finalArray.push(productObject[keyFieldName]);
             }
         )
+        console.log(finalArray);
         setKeysChecked(finalArray);
     }
     const unCheckAll=()=>{
@@ -395,7 +450,6 @@ export default function Inventory(){
         if(formType=="number"){
             value=value/100*100
         }
-        const keyFieldName=getKeyFieldName();
         let finalArray:any=[];
         productsToShow.slice((page*rowsPerPage),(page*rowsPerPage)+rowsPerPage).map(
             (productObject:any)=>{
@@ -440,7 +494,6 @@ export default function Inventory(){
                 style={{
                     display:"flex",
                     margin:"10px",
-                    
                     justifyContent:"center",
                     alignContent:"center",
                 }}
@@ -558,7 +611,8 @@ export default function Inventory(){
             <div className="productsDisplayDiv">
                 <table>
                     <thead>
-                        <tr>
+                        <GetTableHead tableFields={productFields} toolbarEnabled={editingRows==0} actionFunction={actionFromTableHeader}/>
+                        {/* <tr>
                             <th style={{width:"100px"}}>
                                 <div>
                                     <div>
@@ -680,7 +734,7 @@ export default function Inventory(){
                                     }
                                 )
                             } 
-                        </tr>
+                        </tr> */}
                     </thead>
                     <tbody>
                         {
