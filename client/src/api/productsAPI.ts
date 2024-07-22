@@ -75,9 +75,8 @@ export const useCategoriesAPI = (): Promise<category[]> => {
 // Get Products by Filter API-> returns only visible products
 export const useGetProductsByFilterAPI = (filterObject: any): Promise<any[]> => {
   const url = apiConfig.POST.PRODUCTSBYFILTER;
-  return api.post(url, filterObject).then(
+  return api.post(url, {filter:filterObject}).then(
     (response) => {
-      
       if (response.data.status === "success") {
         return response.data.products.filter((product:any)=>{return product.VISIBILITY=="YES"});
       } else {
@@ -99,7 +98,6 @@ export const useGetProductsByCategoryIDAPI = (catId: any): Promise<any[]> => {
   return api.post(url, { "categoryId": catId }).then(
     (response) => {
       if (response.data.status === "success") {
-        console.log(response.data.products);
         return response.data.products.filter((product:any)=>product.VISIBILITY=="YES");
       } else {
         return [];

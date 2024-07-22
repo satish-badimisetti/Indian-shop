@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Typography,
   Card,
@@ -43,6 +44,7 @@ export const useStyles = makeStyles((theme) => ({
 
 
 const ShopByBrandRenderer: React.FC = () => {
+  const navigate=useNavigate();
   const classes = useStyles();
   
   const [brands, setBrands] = useState<any[]>([]);
@@ -86,9 +88,12 @@ const ShopByBrandRenderer: React.FC = () => {
   
   const fetchBrands = async () => {
     const response = await useGetBrandsAPI();
-    console.log(response);
     setBrands(response);
   };
+
+  const handleBrandClick=(brandName:string)=>{
+    navigate(`productList/brand/${brandName}`)
+  }
 
   return (
     <div style={{ padding: "100px" }}>
@@ -121,7 +126,7 @@ const ShopByBrandRenderer: React.FC = () => {
                   <div
                     key={index}
                     style={{width:`${brandWidth}`}}
-                    onClick={()=>{alert(`${card.name}`)}}
+                    onClick={()=>{handleBrandClick(`${card.name}`)}}
                   >
                     <BrandCardRenderer data={card} />
                   </div>

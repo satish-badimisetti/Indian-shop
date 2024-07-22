@@ -15,7 +15,7 @@ import SortIcon from "@material-ui/icons/Sort";
 import GroceryItemCardRenderer from "../Grocery-Item-Card/Grocery-Item-Card-Renderer";
 import SearchIcon from "@mui/icons-material/Search";
 //apis
-import { useGetProductsByCategoryIDAPI } from "../../api/productsAPI";
+import { useGetProductsByCategoryIDAPI, useGetProductsByFilterAPI } from "../../api/productsAPI";
 import ProductsBannerRenderer from "../Components-Banner/Products-Banner-Renderer";
 
 const ProductListingPageRenderer: React.FC = () => {
@@ -24,14 +24,27 @@ const ProductListingPageRenderer: React.FC = () => {
   const [productsToShow,setProductsToShow]=useState<any[]>([]);
   const [searchString,setSearchString]=useState("");
   const [sortOption,setSortOption]=useState(0);
-  
-  const {categoryid}=useParams();
+  // const [listingType,setListingType]=useState<string | undefined>("");
+  // const [categoryId,setCategoryId]=useState<string | undefined>("");
+  // const [brandName,setBrandName]=useState<string | undefined>("");
+  const {type,target}=useParams();
+  const categoryid=17;
   useEffect(()=>{
+    console.log(type);
+    console.log(target);
     updateProducts();
-  },[categoryid]);
+  },[type,target]);
+  
 
   const updateProducts=async ()=>{
-    const productsList=await useGetProductsByCategoryIDAPI(categoryid);
+    let productsList:any[]=[];
+    if(type=="category"){
+      productsList=await useGetProductsByCategoryIDAPI(target);
+      
+    }
+    if(type=="brand"){
+      productsList=await useGetProductsByFilterAPI({Brand:target});
+    }
     
     setProducts(productsList);
     updateProductsToShow(productsList,searchString,sortOption===1?1:-1);
@@ -62,7 +75,8 @@ const ProductListingPageRenderer: React.FC = () => {
       <div className={classes.header}>
         <div className={classes.available} >
           <Typography className={classes.title}>
-            {products[0]?.CAT_NAME}
+            {type=="category" && products[0]?.CAT_NAME}
+            {type=="brand" && products[0]?.Brand}
           </Typography>
           <Typography variant="body2">
             <span >{productsToShow.length} available</span>

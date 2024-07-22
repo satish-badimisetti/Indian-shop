@@ -34,7 +34,9 @@ export default () => {
                 <Route path='/' element={<App />}>
                     <Route path='home' element={<HomeComponentRenderer />} />
                 </Route>
-                <Route path='productList/category/:categoryid' element={<ProductListingPageRenderer />} />
+                <Route path='productList/:type/:target' element={<ProductListingPageRenderer />} />
+                {/*tyype=>category / brand, target=>categoryid or brand name}
+                {/* <Route path='productList/brand/:brandName' element={<ProductListingPageRenderer />} /> */}
                 {/* <Route path='productDetail' element={<ProductDetailsRenderer
                     name={"Product Name"}
                     description={"Product Description"}

@@ -52,7 +52,7 @@ export default function Inventory(){
         {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ width:"200px",textAlign:"left"},columnVisible:true},
         {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]},columnVisible:true},
         {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"calc",calc:{"devide":["DiscountedPrice","NetWeight"]},style:{textAlign:"right"},columnVisible:true},
-        {field:"ProductVisibility",title:"Visibility",type:"switch",toolbar:["select"],selectOptions:["Yes","No"],columnVisible:true}
+        {field:"VISIBILITY",title:"VISIBILITY",type:"switch",toolbar:["select"],selectOptions:["YES","NO"],columnVisible:true}
     ]);
     const [products,setProducts]=useState([
                     {
@@ -70,40 +70,7 @@ export default function Inventory(){
                         "Labels":["Best Sellers", "On Sale"],
                         "DiscountedPrice":"3.393",
                         "PricePerUnitQuantity":"6.058",
-                        "ProductVisibility":"yes"
-                    },
-                    {
-                        "PROD_ID":"1235",
-                        "Cat_Name":"Milk",
-                        "Name":"Milk Powder",
-                        "Brand":"Heritage",
-                        "NoofUnits":"1",
-                        "Units":"l",
-                        "NetWeight":"0.89",
-                        "Quantity":"2",
-                        "Price":"3.77",
-                        "Discount":"10",
-                        "NoOfQuantitiesOnDiscountedPrice":"23",
-                        "Labels":["Best Sellers"],
-                        "DiscountedPrice":"3.393",
-                        "PricePerUnitQuantity":"6.058",
-                        "ProductVisibility":"no"
-                    },{
-                        "PROD_ID":"1236",
-                        "Cat_Name":"Milk",
-                        "Name":"Milk Packet",
-                        "Brand":"Heritage",
-                        "NoofUnits":"1",
-                        "Units":"l",
-                        "NetWeight":"0.89",
-                        "Quantity":"2",
-                        "Price":"3.77",
-                        "Discount":"10",
-                        "NoOfQuantitiesOnDiscountedPrice":"23",
-                        "Labels":["Best Sellers"],
-                        "DiscountedPrice":"3.393",
-                        "PricePerUnitQuantity":"6.058",
-                        "ProductVisibility":"no"
+                        "VISIBILITY":"YES"
                     }
                 ]);
     
@@ -140,7 +107,7 @@ export default function Inventory(){
                                                 Discount:Math.round(product.Discount*100),
                                                 Labels:labels,
                                                 Price:parseFloat((product.Price)?.toFixed(2)),
-                                                PricePerUnitQuantity:parseFloat((product.PricePerUnitQuantity)?.toFixed(3)),
+                                                PricePerUnitQuantity:parseFloat((product.PricePerUnitQuantity)?.toFixed(2)),
                                                 NetWeight:parseFloat((product.NetWeight)?.toFixed(3)),
                                             }
                 if(checkForDiscrepency(product)){

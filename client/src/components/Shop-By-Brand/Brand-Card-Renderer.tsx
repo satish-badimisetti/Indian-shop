@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BrandCardRenderer = (data: any) => {
+  
   return (
     <Card className={useStyles().cardStyles}>
       <CardMedia

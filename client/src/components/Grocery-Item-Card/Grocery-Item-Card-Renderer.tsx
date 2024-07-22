@@ -21,8 +21,9 @@ const BASE_URL = apiConfig.BASE_URL;
 
 const GroceryItemCardRenderer = (product: any) => {
   const item: any = {};
-
+  
   if (product.product) {
+    
     (item.discount = Math.round(product.product.Discount * 100) ),
     (item.title = product.product.Name),
     (item.pricePerVolume =

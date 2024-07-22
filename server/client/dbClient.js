@@ -144,7 +144,7 @@ async function updateCategoryNames(){
   const collection=db.collection("Products");
 
   const categoriesArray=await getProductCategories();
-  const products=await getAllProducts();//CAT_ID
+  const products=await getAllProducts();
 
   products.forEach(target => {
     categoriesArray.some((category)=>{
@@ -159,7 +159,28 @@ async function updateCategoryNames(){
   // console.log(products[0]);
 
 }
-// updateCategoryNames();
+async function updateAllProducts(){
+  const client=await createDocDBConnection();
+  const db=client.db(dbName);
+  const collection=db.collection("Products");
+
+  const products=await getAllProducts();
+
+  products.forEach(target => {
+        const Price=parseFloat(target.Price);
+        const DiscountedPrice=parseFloat(target.DiscountedPrice);
+        const newDiscount=Math.round(((Price-DiscountedPrice)/Price)*100)/100;
+        // console.log(`${target.PROD_ID},${target.CAT_ID}-${newDiscount}`);
+        
+
+        collection.updateOne( { PROD_ID: target.PROD_ID,CAT_ID:target.CAT_ID }, { $set: { "Discount":newDiscount } } ) 
+        
+        return true;
+  });
+  console.log("Done")
+
+}
+// updateAllProducts();
 
 /**
  *
@@ -173,20 +194,20 @@ async function getProductsByCategoryId(categoryId) {
     const col = db.collection("Products");
 
     const products = await col.find({ CAT_ID: parseInt(categoryId) }).toArray();
+    console.log(products);
     return products;
   } catch (err) {
     console.error("Error fetching getProductsByCategoryId: ", err);
     throw err;
   }
 }
-
+// getProductsByCategoryId(1)
 /**
  *
  * @returns Load all the Products by bestsellets
  */
 async function getProductsByFilter(filter) {
   const client = await createDocDBConnection();
-
   try {
     const db = client.db(dbName);
     const col = db.collection("Products");
@@ -198,6 +219,7 @@ async function getProductsByFilter(filter) {
     throw err;
   }
 }
+
 async function getBrands() {
   const client = await createDocDBConnection();
 
