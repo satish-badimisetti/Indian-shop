@@ -102,7 +102,6 @@ export default function Inventory(){
                         }
                     }
                 )
-                console.log(product.PROD_ID);
                 const alteredProductObject={...product,
                                                 Discount:Math.round(product.Discount*100),
                                                 Labels:labels,

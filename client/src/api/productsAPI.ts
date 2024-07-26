@@ -201,3 +201,23 @@ export const useDeleteOneProductAPI=async (productDocumentId:any)=>{
     }
   );
 }
+
+export const useAddProductAPI=async (productObject:any)=>{
+  const url = apiConfig.POST.ADDPRODUCT;
+
+  return api.post(url, { product: productObject }).then(
+    (response) => {
+      console.log(response.data);
+      if (response.data.status === "success") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return false;
+    }
+  ); 
+}

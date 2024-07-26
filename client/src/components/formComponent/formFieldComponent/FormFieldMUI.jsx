@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import validateFields from '../validationModule';
-import { TextField, Select, FormControl, InputLabel, MenuItem, FormHelperText, Checkbox, ListItemText, Box, Chip } from '@mui/material';
+import { TextField, Select, FormControl, InputLabel, MenuItem, FormHelperText, Checkbox, ListItemText, Box, Chip, Button } from '@mui/material';
 
 export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}){
     const {fieldName}=fieldObject
@@ -11,6 +11,7 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
     const [errors,setErrors]=useState([]);
     const [fieldValue,setFieldValue]=useState("");
     const [selectedArray,setSelectedArray]=useState([]);
+    const [file,setFile]=useState({base64String:"",fileName:""});
 
     const handleInputChange=(e)=>{
         const thisValue=e.target.value;
@@ -21,6 +22,21 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
         setterFunction({[fieldName]:thisValue});
         errorUpdater(fieldName,errorsResulted.length);
     }
+    const handleFileChange = (event) => {
+        const targetFile = event.target.files[0];
+        const fieldName=event.target.name;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64Value = reader.result;
+            const thisValue={base64String:base64Value,fileName:targetFile.name};
+            let errorsResulted=[];
+            setFile(thisValue);
+            setErrors(errorsResulted);
+            setterFunction({[fieldName]:thisValue});
+            errorUpdater(fieldName,errorsResulted.length);
+        };
+        reader.readAsDataURL(targetFile);
+    };
     const handleCheckboxChange=(e)=>{
         const thisValue=e.target.value;
         const fieldName=e.target.name;
@@ -150,6 +166,36 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                         <FormHelperText>{errors.join(", ")}</FormHelperText>
                                 </FormControl>
                             }
+                            {fieldType==="file" &&
+                                <div>
+                                    <input
+                                        style={{ display: 'none' }}
+                                        id="file-input"
+                                        type="file"
+                                        onChange={handleFileChange}
+                                        name={fieldName}
+                                    />
+                                    <label htmlFor="file-input">
+                                        <Button variant="contained" component="span">
+                                            Choose File
+                                        </Button>
+                                    </label>
+                                    <TextField
+                                        size='small'
+                                        error={errors.length>0}
+                                        sx={{width:"100%",background:"white"}}
+                                        value={file.fileName}
+                                        label={`${fieldLabel} : ${validationSchema.notEmpty ? "*":""}`}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                            style:{color:"green"}
+                                        }}
+                                        variant="standard"
+                                        helperText={errors.join(", ")}
+                                    />
+                                </div>
+                            }
+                            
                         </div>
                 </>
             }

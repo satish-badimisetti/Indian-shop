@@ -1,4 +1,5 @@
 const { MongoClient, ObjectId } = require("mongodb");
+const fs = require('fs');
 const path = require("path");
 const config = require("../config");
 const { warn } = require("console");
@@ -64,21 +65,36 @@ async function getProductCategories() {
 }
 
 async function addProduct(productObject){
-  const client=await createDocDBConnection();
-  try{
-    const db=client.db(dbName);
-    const collection=db.collection("Products");
-    const queryResult=await collection.aggregate([ 
-      { $sort: { "PROD_ID": -1 } },
-      {$project:{"PROD_ID":1}},
-      {$limit: 1}
-    ]).toArray();
-    const newProdId=queryResult[0].PROD_ID + 1;
-    collection.insertOne({...productObject,"PROD_ID":newProdId});
-    return newProdId;
-  }catch(err){
-    throw err;
-  }
+  // const base64Data = productObject.image.replace(/^data:image\/\w+;base64,/, '');
+  const base64Data = productObject.uploadFile.base64String.replace('data:', '').replace(/^.+,/, '');
+  const buffer = Buffer.from(base64Data, 'base64');
+
+  //filename
+  // const filename = `${productObject.Name}.png`;
+  const filename = productObject.uploadFile.fileName;
+  const filePath = path.join(__dirname, 'uploads', filename);
+  let result=true
+  fs.writeFile(filePath, buffer, (err) => {
+    if (err) {
+      result=false
+    }
+  });
+  return result
+  // const client=await createDocDBConnection();
+  // try{
+  //   const db=client.db(dbName);
+  //   const collection=db.collection("Products");
+  //   const queryResult=await collection.aggregate([ 
+  //     { $sort: { "PROD_ID": -1 } },
+  //     {$project:{"PROD_ID":1}},
+  //     {$limit: 1}
+  //   ]).toArray();
+  //   const newProdId=queryResult[0].PROD_ID + 1;
+  //   collection.insertOne({...productObject,"PROD_ID":newProdId});
+  //   return newProdId;
+  // }catch(err){
+  //   throw err;
+  // }
 }
 //update Product: productObject=> object of filed:value ->to be modified, should not contain _id; returns modifiedCount
 async function updateProduct(productDocumentId,productObject){

@@ -1,6 +1,7 @@
 import React from "react"
 import Form from "../../formComponent/Form"
-import {Grid} from "@mui/material"
+import {Grid} from "@mui/material";
+import { useAddProductAPI } from "../../../api/productsAPI";
 export default function AddProduct(){
     const title="Add Product";
     const fieldsArray=[
@@ -19,9 +20,11 @@ export default function AddProduct(){
         {fieldName:"Labels", fieldLabel:"Labels", fieldType:"selectItems", options:[{option:"Best Sellers",value:"Best Sellers"},{option:"New Arrivals",value:"New Arrivals"},{option:"On Sale",value:"On Sale"}], validationSchema:{notEmpty:{value:true,errorMessage:"required"}}},
         {fieldName:"DietaryInfo", fieldLabel:"Dietary Infor.", fieldType:"selectItems", options:[{option:"Vegan",value:"Vegan"},{option:"Guten Free",value:"Guten Free"}], validationSchema:{notEmpty:{value:true,errorMessage:"required"}}},
         {fieldName:"Description", fieldLabel:"Description", fieldType:"textBox", validationSchema:{notEmpty:true,required:true}},
+        {fieldName:"uploadFile", fieldLabel:"Upload File", fieldType:"file", validationSchema:{notEmpty:true,required:true}},
     ]
-    const submitHandler=(data:any)=>{
-        console.log(data);
+    const submitHandler=async (data:any)=>{
+        const result=await useAddProductAPI(data);
+        console.log(result);
     }
     return(
         <div

@@ -123,7 +123,11 @@ router.post("/addProduct", async (req, res) => {
   try {
     const productObject = req.body.product;
     const newProductId = await dbClient.addProduct(productObject);
-    res.status(200).json({ status: "success", newProductId: newProductId });
+    console.log(newProductId);
+    if(newProductId)
+      res.status(200).json({ status: "success", newProductId: newProductId });
+    else
+      res.status(200).json({ status: "failed", newProductId: newProductId });
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
   }
