@@ -72,7 +72,7 @@ async function addProduct(productObject){
   //filename
   // const filename = `${productObject.Name}.png`;
   const filename = productObject.uploadFile.fileName;
-  const filePath = path.join(__dirname, 'uploads', filename);
+  const filePath = path.join(__dirname, '../images/products', filename);
   let result=true
   fs.writeFile(filePath, buffer, (err) => {
     if (err) {
@@ -80,21 +80,6 @@ async function addProduct(productObject){
     }
   });
   return result
-  // const client=await createDocDBConnection();
-  // try{
-  //   const db=client.db(dbName);
-  //   const collection=db.collection("Products");
-  //   const queryResult=await collection.aggregate([ 
-  //     { $sort: { "PROD_ID": -1 } },
-  //     {$project:{"PROD_ID":1}},
-  //     {$limit: 1}
-  //   ]).toArray();
-  //   const newProdId=queryResult[0].PROD_ID + 1;
-  //   collection.insertOne({...productObject,"PROD_ID":newProdId});
-  //   return newProdId;
-  // }catch(err){
-  //   throw err;
-  // }
 }
 //update Product: productObject=> object of filed:value ->to be modified, should not contain _id; returns modifiedCount
 async function updateProduct(productDocumentId,productObject){
