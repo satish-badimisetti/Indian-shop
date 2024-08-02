@@ -22,7 +22,7 @@ export function percentage(a:number,b:number){
 }
 export function roundOff1(number:number){
     const roundedNumber = Math.round(number * 1000) / 1000;
-    return parseFloat(roundedNumber.toFixed(3));
+    return parseFloat(roundedNumber.toFixed(2));
 }
 export function calculate(equation:any,data:any){
     const functionName=Object.keys(equation)[0];

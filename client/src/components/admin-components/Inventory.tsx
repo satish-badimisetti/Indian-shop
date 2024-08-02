@@ -157,7 +157,7 @@ export default function Inventory(){
         newPage: number,
       ) => {
         setPage(newPage);
-        setKeysChecked([]);
+        setCheckAllStatus("none");
       };
       const handleChangeRowsPerPage = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -261,7 +261,7 @@ export default function Inventory(){
             setFilterValues(actionObject.value);
         }
         else if(actionObject.actionType=="check"){
-            setCheckAllStatus(actionObject.value)
+            setCheckAllStatus(actionObject.value);
         }
     },[])
 
