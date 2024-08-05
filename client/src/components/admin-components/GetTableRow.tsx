@@ -56,7 +56,7 @@ function GetTableRow(props:any){
     }
     const onChangeSwitchInputField=(e:React.ChangeEvent<any>)=>{
         const fieldName=e.target.name;
-        const value=e.target.checked? "Yes":"No";
+        const value=e.target.checked? "YES":"NO";
         setRowData({...rowData,[fieldName]:value});
     }
     const onMultiSelectChange=(selectedOptions:any,fieldName:any)=>{
@@ -246,7 +246,7 @@ function GetTableRow(props:any){
                                             edge="start"
                                             disabled={editState? false:true}
                                             name={`${field.field}`}
-                                            checked={rowData[field.field]=="Yes"}
+                                            checked={rowData[field.field]=="YES"}
                                             onChange={(e)=>onChangeSwitchInputField(e)}
                                             style={{padding:"0px"}}
                                         />

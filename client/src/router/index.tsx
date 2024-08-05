@@ -28,6 +28,7 @@ export default () => {
                 <Route path='login' element={<SignInRenderer />} />
                 <Route path='signup' element={<SignUp />} />
                 <Route path="admin" element={<RequireAuth><AdminMain /></RequireAuth>} >
+                {/* <Route path="admin" element={<AdminMain />} > */}
                     <Route path="inventory" element={<Inventory />} />
                     <Route path="addproduct" element={<AddProduct />} />
                 </Route>

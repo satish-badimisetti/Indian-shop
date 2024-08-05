@@ -147,6 +147,22 @@ export const  useGetBrandsAPI = async () => {
 		return [];
 	}
 };
+export const  useGetAllBrandsAPI = async () => {
+	const url = apiConfig.GET.GETALLBRANDS;
+
+	try{
+		const brands=await api.get(url);
+		if(brands.data.status==="success"){
+			return brands.data.brands;
+		}
+		else{
+			return [];
+		}
+	}catch(error){
+		console.log(error);
+		return [];
+	}
+};
 export const useUpdateOneProductAPI=async (productDocumentId:any,productObject:any)=>{
   const url = apiConfig.POST.UPDATEONEPRODUCT;
 
@@ -184,7 +200,7 @@ export const useUpdateMultipleProductsAPI=async (arrayOfModificationObjects:any)
   );
 }
 export const useDeleteOneProductAPI=async (productDocumentId:any)=>{
-  const url = apiConfig.POST.UPDATEONEPRODUCT;
+  const url = apiConfig.POST.DELETEONEPRODUCT;
 
   return api.post(url, { productDocumentId: productDocumentId }).then(
     (response) => {
@@ -205,14 +221,10 @@ export const useDeleteOneProductAPI=async (productDocumentId:any)=>{
 export const useAddProductAPI=async (productObject:any)=>{
   const url = apiConfig.POST.ADDPRODUCT;
 
-  return api.post(url, { product: productObject }).then(
+  return api.post(url, { productObject: productObject }).then(
     (response) => {
       console.log(response.data);
-      if (response.data.status === "success") {
-        return true;
-      } else {
-        return false;
-      }
+      return response.data;
     }
   ).catch(
     (error) => {

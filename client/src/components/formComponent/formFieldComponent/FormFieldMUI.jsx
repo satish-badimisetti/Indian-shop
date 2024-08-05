@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import validateFields from '../validationModule';
-import { TextField, Select, FormControl, InputLabel, MenuItem, FormHelperText, Checkbox, ListItemText, Box, Chip, Button } from '@mui/material';
+import { TextField, Select, FormControl, InputLabel, MenuItem, FormHelperText, Checkbox, ListItemText, Box, Chip, Button, Autocomplete } from '@mui/material';
 
 export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}){
     const {fieldName}=fieldObject
@@ -11,7 +11,8 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
     const [errors,setErrors]=useState([]);
     const [fieldValue,setFieldValue]=useState("");
     const [selectedArray,setSelectedArray]=useState([]);
-    const [file,setFile]=useState({base64String:"",fileName:""});
+    const [base64String,setbase64String]=useState("");
+    const [fileName,setFileName]=useState();
 
     const handleInputChange=(e)=>{
         const thisValue=e.target.value;
@@ -22,16 +23,29 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
         setterFunction({[fieldName]:thisValue});
         errorUpdater(fieldName,errorsResulted.length);
     }
+    const handleAutoCompleteChange=(value,fieldName)=>{
+        let errorsResulted=validateFields(value,validationSchema);
+        setFieldValue(value);
+        setErrors(errorsResulted);
+        setterFunction({[fieldName]:value});
+        errorUpdater(fieldName,errorsResulted.length);
+    }
     const handleFileChange = (event) => {
         const targetFile = event.target.files[0];
+        
         const fieldName=event.target.name;
         const reader = new FileReader();
         reader.onloadend = () => {
             const base64Value = reader.result;
-            const thisValue={base64String:base64Value,fileName:targetFile.name};
+            const thisValue=base64Value;
             let errorsResulted=[];
-            setFile(thisValue);
+            
+            if(targetFile.type!="image/png"){
+                errorsResulted.push("choose only png")
+            }
             setErrors(errorsResulted);
+            setbase64String(thisValue);
+            setFileName(targetFile.name)
             setterFunction({[fieldName]:thisValue});
             errorUpdater(fieldName,errorsResulted.length);
         };
@@ -103,8 +117,9 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                         shrink: true,
                                         style:{color:"green"}
                                       }}
-                                    variant="outlined"
+                                    variant="standard"
                                     multiline
+                                    rows={4}
                                     helperText={errors.join(", ")}
                                 />
                             }
@@ -131,6 +146,37 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                     <FormHelperText>{errors.join(", ")}</FormHelperText>
                                 </FormControl>
                             }
+                            {fieldType==="freeStyleSelect" &&
+                                <Autocomplete
+                                    freeSolo
+                                    disableClearable
+                                    options={fieldObject.options}
+                                    sx={{width:"100%",background:"white"}}
+                                    value={fieldValue}
+                                    onChange={(e, newValue)=>{handleAutoCompleteChange(newValue,fieldName)}}
+                                    inputValue={fieldValue}
+                                    onInputChange={(e, newInputValue) => {
+                                        handleAutoCompleteChange(newInputValue, fieldName);
+                                    }}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            {...params}
+                                            size='small'
+                                            error={errors.length>0}
+                                            
+                                            name={fieldName}
+                                            label={`${fieldLabel} : ${validationSchema.notEmpty ? "*":""}`}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                                style:{color:"green"}
+                                            }}
+                                            variant="standard"
+                                            helperText={errors.join(", ")}
+                                        />
+                                    }
+                                />
+                                
+                            }
                             {fieldType==="selectItems" &&
                                 <FormControl sx={{ width: "100%" }} error={errors.length>0}>
                                     <InputLabel size="small" variant='standard' shrink style={{color:"green"}}>{`${fieldLabel} : ${validationSchema.notEmpty ? "*":""}`}</InputLabel>
@@ -143,12 +189,13 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                             variant='standard'
                                             name={fieldName}    
                                             renderValue={(selectedArray) =>(
-                                                        <Box sx={{display:"flex", flexWrap:"wrap", gap:"1px"}}>
-                                                            {selectedArray.map(
-                                                                (value)=>{return <Chip key={value} label={value} />}
-                                                                )
-                                                            }
-                                                        </Box>
+                                                            selectedArray.join(", ")
+                                                        // <Box sx={{display:"flex", flexWrap:"wrap", gap:"1px"}}>
+                                                        //     {selectedArray.map(
+                                                        //         (value)=>{return <Chip key={value} label={value} />}
+                                                        //         )
+                                                        //     }
+                                                        // </Box>
                                                     )}
                                         >
                                             {fieldObject.options.map(
@@ -166,6 +213,7 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                         <FormHelperText>{errors.join(", ")}</FormHelperText>
                                 </FormControl>
                             }
+
                             {fieldType==="file" &&
                                 <div>
                                     <input
@@ -174,6 +222,7 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                         type="file"
                                         onChange={handleFileChange}
                                         name={fieldName}
+                                        accept="image/png"
                                     />
                                     <label htmlFor="file-input">
                                         <Button variant="contained" component="span">
@@ -184,7 +233,7 @@ export default function FormFieldMUI({fieldObject, setterFunction, errorUpdater}
                                         size='small'
                                         error={errors.length>0}
                                         sx={{width:"100%",background:"white"}}
-                                        value={file.fileName}
+                                        value={fileName}
                                         label={`${fieldLabel} : ${validationSchema.notEmpty ? "*":""}`}
                                         InputLabelProps={{
                                             shrink: true,

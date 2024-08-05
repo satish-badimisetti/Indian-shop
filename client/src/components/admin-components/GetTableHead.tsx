@@ -22,7 +22,6 @@ interface filterValuesObject{
 }
 
 const GetTableHead:React.FC<componentProps>=({tableFields, toolbarEnabled, actionFunction})=>{
-    console.log("header rendering");
     const [sortField,setSortField]=useState<any[]>([]);
     const [filterValues,setFilterValues]=useState<filterValuesObject>({})
 

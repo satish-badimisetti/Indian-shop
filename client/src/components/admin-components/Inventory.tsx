@@ -79,7 +79,6 @@ export default function Inventory(){
     )
     const fetchProducts=async ()=>{
         const productsReceived=await useGetProductsAPI();
-
         let categoriesArray:any=[];
         let brandsArray:any=[];
         let labelsArray:any=[];
@@ -297,10 +296,6 @@ export default function Inventory(){
             setKeysChecked([]);
         }
     },[checkAllStatus]);
-
-    useEffect(()=>{
-        console.log("products to show changed");
-    },[productsToShow]);
 
     const getComparisionType=(field:string)=>{
         let searchType=null;

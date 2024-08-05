@@ -120,18 +120,27 @@ router.post("/getProductsByCategoryId", async (req, res) => {
   }
 });
 router.post("/addProduct", async (req, res) => {
+  const productObject = req.body.productObject;
   try {
-    const productObject = req.body.product;
-    const newProductId = await dbClient.addProduct(productObject);
-    console.log(newProductId);
-    if(newProductId)
-      res.status(200).json({ status: "success", newProductId: newProductId });
-    else
-      res.status(200).json({ status: "failed", newProductId: newProductId });
+    const result=await dbClient.addProduct(productObject);
+    if(result.status=="success"){
+      res.status(200).json({status:"success",productId:result.productId,categoryName:result.categoryName});
+    }else{
+      res.status(500).json({status:"fail",message:result.message});
+    }
   } catch (err) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({status:"fail", message: "Internal Server Error" });
   }
 });
+router.get("/allBrands",async (req,res)=>{
+  try{
+    const allBrands=await dbClient.getAllBrands();
+    res.status(200).json({"status":"success","brands":allBrands});
+  }catch(err){
+    console.log(err);
+    res.status(200).json({"status":"error"})
+  }
+})
 router.post("/updateProduct", async (req, res) => {
   try {
     const productObject = req.body.product;
@@ -160,7 +169,7 @@ router.post("/updateMultipleProducts", async (req, res) => {
 router.post("/deleteProduct", async (req, res) => {
   try {
     const productObject = req.body.productDocumentId;
-    const deleteProductCount = await dbClient.updateProduct(productObject);
+    const deleteProductCount = await dbClient.deleteProduct(productObject);
     res.status(200).json({ status: "success", count: deleteProductCount });
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
