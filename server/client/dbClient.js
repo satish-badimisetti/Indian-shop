@@ -370,7 +370,49 @@ async function getProductsByFilter(filter) {
     throw err;
   }
 }
-
+async function getBestSellers() {
+  const client = await createDocDBConnection();
+  try {
+    const db = client.db(dbName);
+    const col = db.collection("Products");
+    const products = await col.find({Labels:{ $regex: "Bestsellers", $options: "i" }}).toArray();
+    return {status:"success",products:products}
+  } catch (err) {
+    console.error("Error fetching getProductsByFilter: ", err);
+    return {status:"fail",message:"unable to connect DB"}
+  }
+}
+async function getProductsByLabel(labelName) {
+  const client = await createDocDBConnection();
+  try {
+    const db = client.db(dbName);
+    const col = db.collection("Products");
+    const products = await col.find({Labels:{ $regex: labelName, $options: "i" }}).toArray();
+    return {status:"success",products:products}
+  } catch (err) {
+    console.error("Error fetching getProductsByFilter: ", err);
+    return {status:"fail",message:"unable to connect DB"}
+  }
+}
+async function getProductsBySearchString(searchString){
+  const client=await createDocDBConnection();
+  try{
+    const db=client.db(dbName);
+    const col=db.collection("Products");
+    const products=await col.find({$expr:{
+                              $regexMatch:{
+                                input:{$concat:["$Brand","$Name"]},
+                                regex:searchString,
+                                options:"i"
+                              }
+                            }
+                          }).toArray();                          
+    return {status:"success",products:products};
+  }catch(err){
+    console.log("unable to get products by search string ",err);
+    return {status:"fail",message:"unable to connect DB"}
+  }
+}
 async function getBrands() {
   const client = await createDocDBConnection();
 
@@ -396,5 +438,8 @@ module.exports = {
   addProduct,
   updateProduct,
   deleteProduct,
-  getAllBrands
+  getAllBrands,
+  getBestSellers,
+  getProductsByLabel,
+  getProductsBySearchString
 };

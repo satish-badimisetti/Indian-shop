@@ -49,7 +49,7 @@ export default function Inventory(){
         {field:"Price",title:"Price",type:"number", toolbar:["sort"], style:{ textAlign:"right"},columnVisible:true},
         {field:"Discount",title:"Disc. %",type:"number", toolbar:["sort"], style:{ textAlign:"center"},columnVisible:true},
         {field:"NoOfQuantitiesOnDiscountedPrice",title:"Qty. for Disc.",type:"number", style:{textAlign:"center"},columnVisible:true},
-        {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["multiselect"], style:{ width:"200px",textAlign:"left"},columnVisible:true},
+        {field:"Labels",title:"Labels",type:"multiSelect",selectOptions:["Best Sellers","New Arrivals","On Sale"],toolbar:["select"], style:{ width:"200px",textAlign:"left"},columnVisible:true},
         {field:"DiscountedPrice",title:"Disc. Price",type:"calc",calc:{"multiply":["Price",{"devide":[{"subtract":[100,"Discount"]},100]}]},columnVisible:true},
         {field:"PricePerUnitQuantity",title:"Price/Qty.",type:"calc",calc:{"devide":["DiscountedPrice","NetWeight"]},style:{textAlign:"right"},columnVisible:true},
         {field:"VISIBILITY",title:"VISIBILITY",type:"switch",toolbar:["select"],selectOptions:["YES","NO"],columnVisible:true}

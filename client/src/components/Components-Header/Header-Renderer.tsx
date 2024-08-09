@@ -20,6 +20,7 @@ import { useGetProductsByFilterAPI } from "../../api/productsAPI";
 import NavbarRenderer from '../Components-Nav-Bar/Nav-Bar-Renderer';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {red} from '@material-ui/core/colors';
+import { IconButton } from '@mui/material';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -29,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 100,
     paddingRight: 100,
     paddingTop: 10,
+    boxShadow:"none"
   },
   logo: {
     flexGrow: 1,
@@ -114,26 +116,35 @@ const useStyles = makeStyles((theme) => ({
   cartIcon: {
     marginLeft: theme.spacing(2),
     color: '#0D3823'
+  },
+  searchIconButton:{
+    borderRadius:"50%",
+    color:"green",
+    "&.Mui-disabled":{
+      color:"grey",
+      opacity:"0.1"
+    }
   }
 }));
 
 const HeaderRenderer = () => {
+    const navigate=useNavigate();
     //global search of products
     const [searchString,setSearchString]=useState("");
     const [products,setProducts]=useState<any[]>([]);
     const [productsToShow,setProductsToShow]=useState<any[]>([]);
-    useEffect(()=>{
-        fetchProducts();
-      },[]);
-    const fetchProducts=async ()=>{
-        const productsReceived=await useGetProductsByFilterAPI({});
-        setProducts(productsReceived);
-        setProductsToShow(productsReceived);
-    }
+    // useEffect(()=>{
+    //     fetchProducts();
+    //   },[]);
+    // const fetchProducts=async ()=>{
+    //     const productsReceived=await useGetProductsByFilterAPI({});
+    //     setProducts(productsReceived);
+    //     setProductsToShow(productsReceived);
+    // }
     const handleSearchStringChange=(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
         const newSearchString=e.target.value;
         setSearchString(newSearchString);
-        updateProductsToShow(newSearchString)
+        // updateProductsToShow(newSearchString)
     }
     const updateProductsToShow=(searchString:string)=>{
         setProductsToShow(
@@ -142,14 +153,21 @@ const HeaderRenderer = () => {
             })
         )
     }
+    const handleSearchClick=()=>{
+      if(searchString!="")  navigate(`/productList/search/${searchString}`);
+    }
+    const handleKeyDownInSearch = (e:React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      if (e.key === 'Enter' && document.activeElement?.id === 'searchBar') {
+        if(searchString!="")  navigate(`/productList/search/${searchString}`);
+      }
+    };
     //end
-  const navigate=useNavigate();
+  
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const auth=useAuth();
 
-  
   const handleCartClose = () => {
     setIsCartOpen(false);
   };
@@ -202,13 +220,21 @@ const HeaderRenderer = () => {
           {auth?.user?.userRole!="admin" &&
             <div className={classes.searchContainer} style={{flex:1}}>
               <InputBase
+                id="searchBar"
                 placeholder="Search everything at our store"
                 className={classes.searchInput}
                 value={searchString}
                 onChange={(e)=>{handleSearchStringChange(e)}}
+                onKeyDown={(e)=>{handleKeyDownInSearch(e)}}
               />
               <div className={classes.searchIcon}>
-                <SearchIcon style={{ width: 30, height: 30 }} />
+                <IconButton disabled={searchString==""?true:false} className={classes.searchIconButton}>
+                  <SearchIcon
+                    style={{ width: 30, height: 30}}
+                    onClick={handleSearchClick}
+                    sx={{color:green}}
+                  />
+                </IconButton>
               </div>
             </div>
           }
@@ -252,11 +278,13 @@ const HeaderRenderer = () => {
           </IconButton> */}
         </Toolbar>
       </AppBar>
+      <div >
+      <NavbarRenderer />
+      </div>
+        
       
-        <NavbarRenderer />
       
-      
-      {
+      {/* {
         searchString.length>0 &&
         <>
             <Divider
@@ -292,7 +320,7 @@ const HeaderRenderer = () => {
                 }}
             />
         </>
-      }
+      } */}
     </div>
   );
 };

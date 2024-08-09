@@ -15,7 +15,12 @@ import SortIcon from "@material-ui/icons/Sort";
 import GroceryItemCardRenderer from "../Grocery-Item-Card/Grocery-Item-Card-Renderer";
 import SearchIcon from "@mui/icons-material/Search";
 //apis
-import { useGetProductsByCategoryIDAPI, useGetProductsByFilterAPI } from "../../api/productsAPI";
+import {
+          useGetProductsByCategoryIDAPI,
+          useGetProductsByFilterAPI,
+          useGetProductsByLabel,
+          useSearchProducts
+        } from "../../api/productsAPI";
 import ProductsBannerRenderer from "../Components-Banner/Products-Banner-Renderer";
 
 const ProductListingPageRenderer: React.FC = () => {
@@ -40,10 +45,17 @@ const ProductListingPageRenderer: React.FC = () => {
     let productsList:any[]=[];
     if(type=="category"){
       productsList=await useGetProductsByCategoryIDAPI(target);
-      
     }
     if(type=="brand"){
       productsList=await useGetProductsByFilterAPI({Brand:target});
+    }
+    if(type=="label"){
+      if(target) productsList=await useGetProductsByLabel(target);
+      else productsList=[];
+    }
+    if(type=="search"){
+      if(target) productsList=await useSearchProducts(target);
+      else productsList=[];
     }
     
     setProducts(productsList);
@@ -67,6 +79,27 @@ const ProductListingPageRenderer: React.FC = () => {
     setSortOption(optionvalue);
     updateProductsToShow(productsToShow,searchString,optionvalue===1?1:-1)
   }
+  const [showGoToTop,setShowGoToTop]=useState(false);
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setShowGoToTop(true);
+      } else {
+        setShowGoToTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
 
   return (
     <>
@@ -121,6 +154,17 @@ const ProductListingPageRenderer: React.FC = () => {
         ))}
       </Grid>
     </Container>
+    {
+      showGoToTop && (
+        <div className={classes.scrollToTop}>
+          <button className={classes.goToTopButton}
+            onClick={scrollToTop}
+          >
+            &#8679; Go to Top
+          </button>
+        </div>
+      )
+    }
     </>
   );
 };
@@ -201,6 +245,23 @@ const useStyles = makeStyles((theme: Theme) =>
     available: {
       display: 'block', // Ensure the text appears on a separate line
     },
+    scrollToTop: {
+      position: "fixed",
+      bottom: "40px",
+      right: "40px",
+      zIndex: 1000,
+    },
+    goToTopButton:{
+        padding: "10px 20px",
+        fontSize: "16px",
+        backgroundColor: "#007bff",
+        color: "white",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer",
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+        transition: "opacity 0.3s ease"
+    }
   })
 );
 

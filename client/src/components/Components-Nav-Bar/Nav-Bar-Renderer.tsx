@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
     paddingLeft: 100,
     paddingRight: 100,
+    boxShadow:"none"
     // paddingTop: 10,
   },
   logo: {
@@ -143,11 +144,12 @@ const NavbarRenderer = () => {
   };
   const handleCategoryClick=(categoryId:number)=>{
     handleCloseMenuCategory();
-    console.log(categoryId)
     navigate(`/productList/category/${categoryId}`);
-   // alert(categoryId);
    }
 //end
+   const handleLabelClick=(label:string)=>{
+    navigate(`/productList/label/${label}`);
+   }
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -231,18 +233,18 @@ const NavbarRenderer = () => {
               </Menu>
             </div>
             <div className={classes.menuContainerGreen}>
-              <Button style={{color:'green', fontWeight:'bold'}}>
+              <Button style={{color:'green', fontWeight:'bold'}} onClick={()=>handleLabelClick("Bestsellers")}>
                 <LoyaltyIcon />
                 Best Sellers
               </Button>
             </div>
             <div className={classes.menuContainer}>
-              <Button style={{color:'green', fontWeight:'bold'}}>
+              <Button style={{color:'green', fontWeight:'bold'}} onClick={()=>handleLabelClick("New arrival")}>
                 New Arrivals
               </Button>
             </div> 
             <div className={classes.menuContainerGreen}>
-              <Button style={{color:'green', fontWeight:'bold'}}>
+              <Button style={{color:'green', fontWeight:'bold'}}  onClick={()=>handleLabelClick("On sale")}>
                 <LoyaltyIcon />
                 On SALE
               </Button>

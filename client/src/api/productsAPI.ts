@@ -75,7 +75,41 @@ export const useCategoriesAPI = (): Promise<category[]> => {
 // Get Products by Filter API-> returns only visible products
 export const useGetProductsByFilterAPI = (filterObject: any): Promise<any[]> => {
   const url = apiConfig.POST.PRODUCTSBYFILTER;
-  return api.post(url, {filter:filterObject}).then(
+  return api.post(url,{filter:filterObject}).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return response.data.products.filter((product:any)=>{return product.VISIBILITY=="YES"});
+      } else {
+        return [];
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return [];
+    }
+  );
+};
+export const useGetProductsByLabel = (labelName: string): Promise<any[]> => {
+  const url = apiConfig.POST.GETPRODUCTSBYLABEL;
+  return api.post(url,{labelName:labelName}).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return response.data.products.filter((product:any)=>{return product.VISIBILITY=="YES"});
+      } else {
+        return [];
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return [];
+    }
+  );
+};
+export const useSearchProducts = (searchString: string): Promise<any[]> => {
+  const url = apiConfig.POST.SEARCHPRODUCTS;
+  return api.post(url,{searchString:searchString}).then(
     (response) => {
       if (response.data.status === "success") {
         return response.data.products.filter((product:any)=>{return product.VISIBILITY=="YES"});

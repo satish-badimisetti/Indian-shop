@@ -9,6 +9,7 @@ import ProductDetailsRenderer from "../Components-Product-Details/Product-Detail
 import GoogleReviewsRenderer from "../Components-Google-Reviews/Google-Reviews-Renderer";
 import BestSellersRenderer from "../Components-Best-Sellers/Best-Sellers-Renderer";
 import KitchenHomeSupplyRenderer from "../Components-Kitchen-Home-Supply/Kitchen-Home-Supply-Renderer";
+import NewArrivalsRenderer from "../Components-NewArrivals/NewArrivals-Renderer";
 import { SignUp, SignInRenderer } from "../Components-User-Account";
 import BannerRenderer from "../Components-Banner/Banner-Renderer";
 import GroceryItemForm from "../Components-Grocery-Item/Grocery-Item-Form";
@@ -24,7 +25,8 @@ export default function HomeComponentRenderer() {
       <ShopByCategoriesRenderer />
       <BestSellersRenderer />
       <GoogleReviewsRenderer />
-      <KitchenHomeSupplyRenderer />
+      {/* <KitchenHomeSupplyRenderer /> */}
+      <NewArrivalsRenderer />
       <ShopByBrandRenderer />
       
       {/* <ProductDetailsRenderer
