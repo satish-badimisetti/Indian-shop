@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Typography,
   Card,
@@ -10,43 +11,89 @@ import {
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import GroceryItemCardRenderer from "../Grocery-Item-Card/Grocery-Item-Card-Renderer";
-import { useStyles } from "../Components-Kitchen-Home-Supply/Kitchen-Home-Supply.styles";
 import BrandCardRenderer from "./Brand-Card-Renderer";
+import {  useGetBrandsAPI } from "./../../api/productsAPI";
+
+import { makeStyles } from "@material-ui/core/styles";
+
+export const useStyles = makeStyles((theme) => ({
+  root: {
+    textAlign: "center",
+  },
+  mainTitle: {
+    marginBottom: theme.spacing(2),
+    paddingTop: theme.spacing(6)
+  },
+  
+ 
+  brandsDiv:{
+    display:"flex",
+    flexDirection:"row",
+    overflow:"hidden",
+    position:"relative",
+    gap:"16px",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  innerBrandsDiv:{
+    "&:hover":{
+      cursor:"pointer"
+    }
+  }
+}));
+
 
 const ShopByBrandRenderer: React.FC = () => {
+  const navigate=useNavigate();
   const classes = useStyles();
-  const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]; // Placeholder for card content
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [numCardsToShow, setNumCardsToShow] = useState(6); // Initial number of cards to show
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (cardRef.current) {
-        const cardWidth = 180; // Width of each card
-        const cardsWidth = cardRef.current.offsetWidth;
-        const containerWidth = cardsWidth - 300 - numCardsToShow*30; // Subtracting 100px padding from both sides
-        console.log("Container Width:", containerWidth);
-        const newNumCardsToShow = Math.floor(containerWidth / cardWidth);
-        setNumCardsToShow(Math.max(newNumCardsToShow, 1)); // Ensure at least 1 card is shown
-      }
-    };
   
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Call the function initially
-    return () => window.removeEventListener("resize", handleResize);
+  const [brands, setBrands] = useState<any[]>([]);
+
+  //relating display of brands
+  const [currentPositionIndex, setCurrentPositionIndex] = useState(0);
+  const [stopScrolling,setStopScrolling]=useState(false);
+  const [brandWidth,setBrandWidth]=useState(200);
+  
+  //brands scrolling
+  const innerDiv=useRef<HTMLDivElement>(null);
+  const brandsDiv=useRef<HTMLDivElement>(null);
+  
+  useEffect(()=>{
+    const brandsScroller=
+      setInterval(()=>
+      {
+        setCurrentPositionIndex((prevIndex)=>{
+          if(!stopScrolling && innerDiv.current && brandsDiv.current){    
+              if(prevIndex*30>(innerDiv.current.offsetWidth)){
+                innerDiv.current.style.transition="";
+                return (brandsDiv.current.offsetWidth/-30)
+              }
+            else {
+              innerDiv.current.style.transition="transform 0.3s linear";
+              return prevIndex+1
+            }
+          }
+          else{
+            return prevIndex
+          }
+        }
+        )
+      },300);
+    return (()=>clearInterval(brandsScroller));
+  });
+  
+  useEffect(() => {
+    fetchBrands();
   }, []);
   
-
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - numCardsToShow));
+  const fetchBrands = async () => {
+    const response = await useGetBrandsAPI();
+    setBrands(response);
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      Math.min(cards.length - numCardsToShow, prevIndex + numCardsToShow)
-    );
-  };
+  const handleBrandClick=(brandName:string)=>{
+    navigate(`productList/brand/${brandName}`)
+  }
 
   return (
     <div style={{ padding: "100px" }}>
@@ -55,77 +102,43 @@ const ShopByBrandRenderer: React.FC = () => {
           <Typography variant="h4" className={classes.mainTitle}>
             Shop By Brands
           </Typography>
-          <div className={classes.cardContainer}>
-            <IconButton
-              className={`${classes.arrowButton} ${classes.leftArrow}`}
-              onClick={handlePrev}
-              disabled={currentIndex === 0}
+          
+            <div
+              className={classes.brandsDiv}
+              ref={brandsDiv}
             >
-              <ChevronLeftIcon fontSize="large" />
-            </IconButton>
-            <Grid
-              container
-              spacing={4}
-              className={classes.gridContainer}
-              ref={cardRef}
+            <div
+              className={classes.innerBrandsDiv}
+              ref={innerDiv}
+              onMouseOver={()=>setStopScrolling(true)}
+              onMouseOut={()=>setStopScrolling(false)}
+              style={{
+                display:"flex",
+                flexDirection:"row",
+                gap:"16px",
+                transition:"transform 0.3s linear",
+                transform:`translate(${-currentPositionIndex*30}px)`,
+              }} 
             >
-              {cards
-                .slice(currentIndex, currentIndex + numCardsToShow)
+              {
+                brands
                 .map((card, index) => (
-                  <Grid key={index} item >
-                    <BrandCardRenderer />
-                  </Grid>
-                ))}
-            </Grid>
-            <IconButton
-              className={`${classes.arrowButton}`}
-              onClick={handleNext}
-              disabled={currentIndex === cards.length - numCardsToShow}
-            >
-              <ChevronRightIcon fontSize="large" />
-            </IconButton>
+                  <div
+                    key={index}
+                    style={{width:`${brandWidth}`}}
+                    onClick={()=>{handleBrandClick(`${card.name}`)}}
+                  >
+                    <BrandCardRenderer data={card} />
+                  </div>
+                  
+                ))
+              }
+            </div>
+            </div>
           </div>
-        </div>
-      {/* </Container> */}
+        
     </div>
   );
 };
 
 export default ShopByBrandRenderer;
-
-// // Define styles for the component
-// const useStyles2 = makeStyles((theme: Theme) =>
-//   createStyles({
-//     root: {
-//       flexGrow: 1,
-//       paddingTop: 50,
-//       paddingBottom: 150,
-//       paddingLeft: 40,
-//       paddingRight: 40,
-//     },
-//     media: {
-//       height: 300,
-//       width: "auto",
-//       margin: "auto",
-//     },
-//     cardContent: {
-//       textAlign: "left",
-//     },
-//     addButton: {
-//       marginTop: theme.spacing(2),
-//     },
-//     quantityControl: {
-//       display: "flex",
-//       alignItems: "center",
-//     },
-//     quantityInput: {
-//       width: 50,
-//       marginRight: theme.spacing(1),
-//       marginLeft: theme.spacing(1),
-//     },
-//     mainTitle: {
-//       textAlign: "center",
-//       marginBottom: theme.spacing(4),
-//     },
-//   })
-// );

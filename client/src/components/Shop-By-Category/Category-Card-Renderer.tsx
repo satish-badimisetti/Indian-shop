@@ -18,6 +18,9 @@ const CategoryCardRenderer = (data: any) => {
         // image={data.data.image}
         alt="img"
         image={`${BASE_URL}images/CATEGORIES/${data.data.CAT_ID}.png`}
+        style={{
+          objectFit:"contain"
+        }}
       // src={`data:image/png;base64, ${data.data.image}`}
       />
       <CardContent className={classes.categoryTitleArea}>

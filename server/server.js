@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const https = require("https");
 const fs = require("fs");
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 // const dbClient = require("./client/dbClient");
 
 const app = express();
@@ -27,13 +27,13 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 app.options("*", cors());
-app.use('/images',express.static("images"));
+app.use('/images', express.static("images"));
 
 //routes
 const productsRoutes = require("./routes/productsRoutes");
 app.use("/products", productsRoutes);
-const userRoutes=require("./routes/userRoutes")
-app.use("/users",userRoutes);
+const userRoutes = require("./routes/userRoutes")
+app.use("/users", userRoutes);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/index.html"));
@@ -51,7 +51,7 @@ const server = https.createServer(
   },
   app
 );
-const port = 3000;
+const port = 8080;
 
 // Start the server
 // const connectString="mongodb+srv://krishnaraodemudamma:cVKRP58Co5WPp8LS@shoppingapp.kjexwsq.mongodb.net/shopping-app?retryWrites=true&w=majority&appName=ShoppingApp";

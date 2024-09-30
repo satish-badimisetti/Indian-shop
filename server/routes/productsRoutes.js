@@ -1,4 +1,5 @@
 const express = require("express");
+// const multer=require("multer");
 // const { getBestSellers, getProductCategories, getProducts } = require("../DB/ProductsModule/productsDB.js");
 // const { processAddProduct, processUpdate, processDelete, processGetProductsRequest, processGetCategoriesRequest } = require("../DB/ProductsModule/productsMiddleware.js");
 const dbClient = require("../client/dbClient");
@@ -7,7 +8,6 @@ const router = express.Router();
 
 //Get All products
 router.get("/all", async (req, res) => {
-  console.log("get request")
   try {
     const products = await dbClient.getAllProducts();
     res.status(200).json({ status: "success", products: products });
@@ -16,14 +16,14 @@ router.get("/all", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-// router.get("/allcategories", async (req, res) => {
-//   try {
-//     const categories = await dbClient.getProductCategories();
-//     res.status(200).json({ status: "success", categories: categories });
-//   } catch (err) {
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
+router.get("/allcategories", async (req, res) => {
+  try {
+    const categories = await dbClient.getProductCategories();
+    res.status(200).json({ status: "success", categories: categories });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 // router.get("/allcategories/:order", async (req, res) => {
 //   try {
 //     const categories = await getProductCategories({ sort: { CAT_ID: req.params.order } });
@@ -119,7 +119,62 @@ router.post("/getProductsByCategoryId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+router.post("/addProduct", async (req, res) => {
+  const productObject = req.body.productObject;
+  try {
+    const result=await dbClient.addProduct(productObject);
+    if(result.status=="success"){
+      res.status(200).json({status:"success",productId:result.productId,categoryName:result.categoryName});
+    }else{
+      res.status(500).json({status:"fail",message:result.message});
+    }
+  } catch (err) {
+    res.status(500).json({status:"fail", message: "Internal Server Error" });
+  }
+});
+router.get("/allBrands",async (req,res)=>{
+  try{
+    const allBrands=await dbClient.getAllBrands();
+    res.status(200).json({"status":"success","brands":allBrands});
+  }catch(err){
+    console.log(err);
+    res.status(200).json({"status":"error"})
+  }
+})
+router.post("/updateProduct", async (req, res) => {
+  try {
+    const productObject = req.body.product;
+    const productDocumentId=req.body.productDocumentId;
+    const modifiedProductCount = await dbClient.updateProduct(productDocumentId,productObject);
+    res.status(200).json({ status: "success", count: modifiedProductCount });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post("/updateMultipleProducts", async (req, res) => {
+  try {
+    const modificationArray=req.body.modificationArray;
+    let modifiedProductDocumentIds=[]
+    for(const modificationObject of modificationArray){
+      const productObject = modificationObject.productObjectModification;
+      const productDocumentId=modificationObject.productDocumentId;
+      const modifiedProductCount = await dbClient.updateProduct(productDocumentId,productObject);
+      if(modifiedProductCount>0) modifiedProductDocumentIds.push(productDocumentId)
+    }
+    res.status(200).json({ status: "success", modifiedProductDocumentIds: modifiedProductDocumentIds });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post("/deleteProduct", async (req, res) => {
+  try {
+    const productObject = req.body.productDocumentId;
+    const deleteProductCount = await dbClient.deleteProduct(productObject);
+    res.status(200).json({ status: "success", count: deleteProductCount });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 router.post("/getProductsByFilter", async (req, res) => {
   try {
     const filter = req.body.filter;
@@ -129,6 +184,28 @@ router.post("/getProductsByFilter", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+router.get("/getBestsellers",async (req,res)=>{
+  const result=await dbClient.getBestSellers();
+  res.status(200).json(result);
+})
+router.post("/productsByLabel",async (req,res)=>{
+  const labelName=req.body.labelName;
+  const result=await dbClient.getProductsByLabel(labelName);
+  res.status(200).json(result);
+})
+router.post("/getBrands", async (req, res) => {
+  try {
+    const brands = await dbClient.getBrands();
+    res.status(200).json({ status: "success", brands: brands });
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post("/search", async (req,res)=>{
+  const searchString=req.body.searchString;
+  const result=await dbClient.getProductsBySearchString(searchString);
+  res.status(200).json(result);
+})
 //=>/products/categories => {sort:asc/desc}
 // router.post("/getcategories", processGetCategoriesRequest, (req, res) => {
 //   const categories = req.categories || [];

@@ -17,6 +17,7 @@ const LocationConverter = ({ latitude , longitude}: LocationProps) => {
           `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
         );
         const data = await response.json();
+        console.log(data.address.city);
         setLocation(data.display_name);
       } catch (error) {
         console.error("Error fetching location:", error);
@@ -37,7 +38,7 @@ const LocationConverter = ({ latitude , longitude}: LocationProps) => {
       value={
         location ? <p>Location: {location}</p> : <p>Loading location...</p>
       }
-      disabled
+      // disabled
     />
   );
 };

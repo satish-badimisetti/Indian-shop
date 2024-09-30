@@ -15,31 +15,104 @@ import SortIcon from "@material-ui/icons/Sort";
 import GroceryItemCardRenderer from "../Grocery-Item-Card/Grocery-Item-Card-Renderer";
 import SearchIcon from "@mui/icons-material/Search";
 //apis
-import { useGetProductsByCategoryIDAPI } from "../../api/productsAPI";
+import {
+          useGetProductsByCategoryIDAPI,
+          useGetProductsByFilterAPI,
+          useGetProductsByLabel,
+          useSearchProducts
+        } from "../../api/productsAPI";
+import ProductsBannerRenderer from "../Components-Banner/Products-Banner-Renderer";
 
 const ProductListingPageRenderer: React.FC = () => {
   const classes = useStyles();
   const [products,setProducts]=useState<any[]>([]);
-
-  const {categoryid}=useParams();
+  const [productsToShow,setProductsToShow]=useState<any[]>([]);
+  const [searchString,setSearchString]=useState("");
+  const [sortOption,setSortOption]=useState(0);
+  // const [listingType,setListingType]=useState<string | undefined>("");
+  // const [categoryId,setCategoryId]=useState<string | undefined>("");
+  // const [brandName,setBrandName]=useState<string | undefined>("");
+  const {type,target}=useParams();
+  const categoryid=17;
   useEffect(()=>{
+    console.log(type);
+    console.log(target);
     updateProducts();
-  },[]);
+  },[type,target]);
+  
+
   const updateProducts=async ()=>{
-    const productsList=await useGetProductsByCategoryIDAPI(categoryid);
-    console.log(productsList);
+    let productsList:any[]=[];
+    if(type=="category"){
+      productsList=await useGetProductsByCategoryIDAPI(target);
+    }
+    if(type=="brand"){
+      productsList=await useGetProductsByFilterAPI({Brand:target});
+    }
+    if(type=="label"){
+      if(target) productsList=await useGetProductsByLabel(target);
+      else productsList=[];
+    }
+    if(type=="search"){
+      if(target) productsList=await useSearchProducts(target);
+      else productsList=[];
+    }
+    
     setProducts(productsList);
+    updateProductsToShow(productsList,searchString,sortOption===1?1:-1);
+  }
+  const handleSearchTextUpdate=(e:any)=>{
+    const searchText=e.target.value;
+    updateProductsToShow(products,searchText,sortOption===1?1:-1);
+    setSearchString(e.target.value);
+  }
+  const updateProductsToShow=(products:any[],searchText:string,sortOrder:number=0)=>{
+    setProductsToShow(
+      products.filter((product)=>{
+        return (`${product.Brand}-${product.Name}`).toUpperCase().includes(searchText.toLocaleUpperCase());
+      }).sort((a,b)=>(a.DiscountedPrice - b.DiscountedPrice)*sortOrder)
+    )
   }
 
+  const handleSortOptionChange=(e:any)=>{
+    const optionvalue=e.target.value;
+    setSortOption(optionvalue);
+    updateProductsToShow(productsToShow,searchString,optionvalue===1?1:-1)
+  }
+  const [showGoToTop,setShowGoToTop]=useState(false);
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setShowGoToTop(true);
+      } else {
+        setShowGoToTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
   return (
+    <>
+    <ProductsBannerRenderer />
     <Container maxWidth="lg" className={classes.container}>
       <div className={classes.header}>
         <div className={classes.available} >
           <Typography className={classes.title}>
-            {products[0]?.CAT_NAME}
+            {type=="category" && products[0]?.CAT_NAME}
+            {type=="brand" && products[0]?.Brand}
           </Typography>
           <Typography variant="body2">
-            <span >{products.length} available</span>
+            <span >{productsToShow.length} available</span>
           </Typography>
         </div>
         <div className={classes.controls}>
@@ -47,6 +120,8 @@ const ProductListingPageRenderer: React.FC = () => {
             <InputBase
               placeholder="What are your looking for"
               className={classes.searchInput}
+              value={searchString}
+              onChange={(e)=>handleSearchTextUpdate(e)}
             />
             <div className={classes.searchIcon}>
               <SearchIcon style={{ width: 18, height: 18 }} />
@@ -55,30 +130,42 @@ const ProductListingPageRenderer: React.FC = () => {
           <FormControl variant="outlined" >
             <Select
               labelId="sort-by-label"
-              value=""
+              value={sortOption}
               displayEmpty
               className={classes.selectEmpty}
               inputProps={{ "aria-label": "Sort By" }}
+              onChange={(e)=>{handleSortOptionChange(e)}}
             >
-              <MenuItem value="" disabled>
-                Sort By
-              </MenuItem>
-              <MenuItem value={1}>Price: Low to High</MenuItem>
-              <MenuItem value={2}>Price: High to Low</MenuItem>
-              <MenuItem value={3}>Best Seller</MenuItem>
+                <MenuItem value={0} disabled>Sort By</MenuItem>
+                <MenuItem value={1}>Price: Low to High</MenuItem>
+                <MenuItem value={2}>Price: High to Low</MenuItem>
+                {/* <MenuItem value={3}>Best Seller</MenuItem> */}
             </Select>
           </FormControl>
         </div>
       </div>
       <Divider className={classes.divider} />
       <Grid container spacing={3}>
-        {products.map((product) => (
-          <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
-            <GroceryItemCardRenderer product={product}/>
-          </Grid>
+        {productsToShow.map((product) => (
+            <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
+              <GroceryItemCardRenderer product={product}/>
+            </Grid>
+          
         ))}
       </Grid>
     </Container>
+    {
+      showGoToTop && (
+        <div className={classes.scrollToTop}>
+          <button className={classes.goToTopButton}
+            onClick={scrollToTop}
+          >
+            &#8679; Go to Top
+          </button>
+        </div>
+      )
+    }
+    </>
   );
 };
 
@@ -158,6 +245,23 @@ const useStyles = makeStyles((theme: Theme) =>
     available: {
       display: 'block', // Ensure the text appears on a separate line
     },
+    scrollToTop: {
+      position: "fixed",
+      bottom: "40px",
+      right: "40px",
+      zIndex: 1000,
+    },
+    goToTopButton:{
+        padding: "10px 20px",
+        fontSize: "16px",
+        backgroundColor: "#007bff",
+        color: "white",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer",
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+        transition: "opacity 0.3s ease"
+    }
   })
 );
 

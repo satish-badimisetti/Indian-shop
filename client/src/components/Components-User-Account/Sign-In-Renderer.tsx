@@ -4,10 +4,15 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { FormControlLabel, InputBase, Checkbox, Typography, Container, Box, Button, Link, Grid, Avatar } from "@mui/material";
 import { useStyles } from './form.styles';
-import { useNavigate } from 'react-router-dom';
 // const navigate = useNavigate();
 
+import { useAuth } from "../Authentication-Components/Auth";
+import { useNavigate } from "react-router-dom";
+
 const SignInRenderer = () => {
+  const auth=useAuth();
+  const navigate=useNavigate();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -15,9 +20,10 @@ const SignInRenderer = () => {
       email: data.get('email'),
       password: data.get('password'),
     });
-    // navigate(`home`, {
-    //   replace: true,
-    // });  
+    if(auth?.login(data.get("email"),data.get("password"))){
+      navigate("/")
+    }
+    else{ alert("not loggedin")}
   };
 
   const defaultTheme = createTheme();

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import apiConfig from "./client/endpoint";
 import api from "./client/webClient";
 
-// Get Products API
+// Get Products API => returns all the products
 export const useGetProductsAPI = (): Promise<any> => {
   const url = apiConfig.GET.GET_PRODUCTS;
 
@@ -72,14 +72,47 @@ export const useCategoriesAPI = (): Promise<category[]> => {
   );
 };
 
-// Get Products by Filter API
+// Get Products by Filter API-> returns only visible products
 export const useGetProductsByFilterAPI = (filterObject: any): Promise<any[]> => {
   const url = apiConfig.POST.PRODUCTSBYFILTER;
-
-  return api.post(url, filterObject).then(
+  return api.post(url,{filter:filterObject}).then(
     (response) => {
       if (response.data.status === "success") {
-        return response.data.products;
+        return response.data.products.filter((product:any)=>{return product.VISIBILITY=="YES"});
+      } else {
+        return [];
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return [];
+    }
+  );
+};
+export const useGetProductsByLabel = (labelName: string): Promise<any[]> => {
+  const url = apiConfig.POST.GETPRODUCTSBYLABEL;
+  return api.post(url,{labelName:labelName}).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return response.data.products.filter((product:any)=>{return product.VISIBILITY=="YES"});
+      } else {
+        return [];
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return [];
+    }
+  );
+};
+export const useSearchProducts = (searchString: string): Promise<any[]> => {
+  const url = apiConfig.POST.SEARCHPRODUCTS;
+  return api.post(url,{searchString:searchString}).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return response.data.products.filter((product:any)=>{return product.VISIBILITY=="YES"});
       } else {
         return [];
       }
@@ -92,15 +125,14 @@ export const useGetProductsByFilterAPI = (filterObject: any): Promise<any[]> => 
   );
 };
 
-// Get Products by Category ID API
+// Get Products by Category ID API -> returns only visible products
 export const useGetProductsByCategoryIDAPI = (catId: any): Promise<any[]> => {
   const url = apiConfig.POST.PRODUCTSBYCATID;
 
   return api.post(url, { "categoryId": catId }).then(
     (response) => {
       if (response.data.status === "success") {
-        console.log(response.data.products);
-        return response.data.products;
+        return response.data.products.filter((product:any)=>product.VISIBILITY=="YES");
       } else {
         return [];
       }
@@ -132,3 +164,106 @@ export const useGetProductsByCategoryAPI = (categoryId: any): Promise<any[]> => 
     }
   );
 };
+
+export const  useGetBrandsAPI = async () => {
+	const url = apiConfig.POST.BRANDS;
+
+	try{
+		const categories=await api.post(url);
+		if(categories.data.status==="success"){
+			return categories.data.brands;
+		}
+		else{
+			return [];
+		}
+	}catch(error){
+		console.log(error);
+		return [];
+	}
+};
+export const  useGetAllBrandsAPI = async () => {
+	const url = apiConfig.GET.GETALLBRANDS;
+
+	try{
+		const brands=await api.get(url);
+		if(brands.data.status==="success"){
+			return brands.data.brands;
+		}
+		else{
+			return [];
+		}
+	}catch(error){
+		console.log(error);
+		return [];
+	}
+};
+export const useUpdateOneProductAPI=async (productDocumentId:any,productObject:any)=>{
+  const url = apiConfig.POST.UPDATEONEPRODUCT;
+
+  return api.post(url, { productDocumentId:productDocumentId,product: productObject }).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return false;
+    }
+  );
+}
+export const useUpdateMultipleProductsAPI=async (arrayOfModificationObjects:any)=>{
+  const url = apiConfig.POST.UPDATEMULTIPLEPRODUCTS;
+
+  return api.post(url, { modificationArray:arrayOfModificationObjects }).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return response.data.modifiedProductDocumentIds;
+      } else {
+        return [];
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return [];
+    }
+  );
+}
+export const useDeleteOneProductAPI=async (productDocumentId:any)=>{
+  const url = apiConfig.POST.DELETEONEPRODUCT;
+
+  return api.post(url, { productDocumentId: productDocumentId }).then(
+    (response) => {
+      if (response.data.status === "success") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return false;
+    }
+  );
+}
+
+export const useAddProductAPI=async (productObject:any)=>{
+  const url = apiConfig.POST.ADDPRODUCT;
+
+  return api.post(url, { productObject: productObject }).then(
+    (response) => {
+      console.log(response.data);
+      return response.data;
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      return false;
+    }
+  ); 
+}
